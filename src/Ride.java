@@ -1,12 +1,14 @@
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Ride {
     private Area source;
     private Area destination;
-    private boolean rideStatus;
+    private RideStatus rideStatus;
+    private int rating;
     private double price;
     private Driver driver;
-    private LinkedList<Offer> priceOffers;
+    private ArrayList<Offer> priceOffers;
 
     public Ride(String source, String destination){
         this.source = new Area();
@@ -14,10 +16,10 @@ public class Ride {
         this.destination = new Area();
         this.destination.setLocation(destination);
 
-        this.rideStatus = false;
+        this.rideStatus = RideStatus.PENDING;
         this.driver = null;
 
-        this.priceOffers = new LinkedList<>();
+        this.priceOffers = new ArrayList<>();
     }
 
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
@@ -25,33 +27,18 @@ public class Ride {
         return source;
     }
 
-    public void setSource(Area source) {
-        this.source = source;
-    }
 
     public Area getDestination() {
         return destination;
     }
 
-    public void setDestination(Area destination) {
-        this.destination = destination;
-    }
 
-    public boolean isRideStatus() {
-        return rideStatus;
-    }
 
-    public void setRideStatus(boolean rideStatus) {
-        this.rideStatus = rideStatus;
-    }
 
     public double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
 
     public Driver getDriver() {
         return driver;
@@ -61,11 +48,61 @@ public class Ride {
         this.driver = driver;
     }
 
-    public LinkedList<Offer> getPriceOffers() {
+    public ArrayList<Offer> getPriceOffers() {
         return priceOffers;
     }
 
-    public void setPriceOffers(LinkedList<Offer> priceOffers) {
+    public void setPriceOffers(ArrayList<Offer> priceOffers) {
         this.priceOffers = priceOffers;
     }
+    public int getRating(){
+        return this.rating;
+    }
+    public void setRating(int rating){
+        this.rating=rating;
+    }
+
+    public void addOffer(Offer offer){
+        this.priceOffers.add(offer);
+    }
+
+    public void viewOffers() {
+        for (int i = 0; i < this.priceOffers.size(); i++) {
+            System.out.println(i + ". " + priceOffers.get(i).toString());
+        }
+        Scanner in = new Scanner(System.in);
+        int selectedOffer =-1;
+        do {
+            System.out.println("Please choose an offer number\nOr enter -1 to exit");
+            selectedOffer = in.nextInt();
+
+            if (selectedOffer == -1)
+                break;
+
+            if (selectedOffer>priceOffers.size()-1){
+                System.out.println("invalid choice");
+                continue;
+            }
+
+            int choice = -1;
+            System.out.println("you want to accept?\n1: Accept 2: Reject");
+            choice=in.nextInt();
+            switch (choice){
+                case 1 -> acceptedOffer(this.priceOffers.get(selectedOffer));
+                case 2 -> this.priceOffers.remove(selectedOffer) ;
+                default -> System.out.println("please give me an answer.....");
+            }
+
+        }while(selectedOffer != -1);
+
+    }
+    public void acceptedOffer(Offer offer){
+        this.driver = offer.getDriver();
+        this.price = offer.getOfferedPrice();
+        this.priceOffers = null;
+    }
+
+
+
+
 }

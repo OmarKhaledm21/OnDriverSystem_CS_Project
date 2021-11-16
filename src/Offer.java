@@ -22,4 +22,10 @@ public class Offer {
     public void setOfferedPrice(double offeredPrice) {
         this.offeredPrice = offeredPrice;
     }
+
+    @Override
+    public String toString() {
+
+        return "Driver name: " + this.driver.getUsername() + "\nOffer : "+ this.offeredPrice;
+    }
 }
