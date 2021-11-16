@@ -1,6 +1,6 @@
 public class CustomerAcceptedRideNotification extends Notification{
-    @Override
-    public void manageNotification() {
 
+    public CustomerAcceptedRideNotification(Ride ride) {
+        super(ride);
     }
 }

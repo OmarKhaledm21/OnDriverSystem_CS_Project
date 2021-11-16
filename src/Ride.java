@@ -10,7 +10,7 @@ public class Ride {
     private Driver driver;
     private ArrayList<Offer> priceOffers;
 
-    public Ride(String source, String destination){
+    public Ride(String source, String destination) {
         this.source = new Area(source);
         this.destination = new Area(source);
 
@@ -29,8 +29,6 @@ public class Ride {
     public Area getDestination() {
         return destination;
     }
-
-
 
 
     public double getPrice() {
@@ -53,14 +51,16 @@ public class Ride {
     public void setPriceOffers(ArrayList<Offer> priceOffers) {
         this.priceOffers = priceOffers;
     }
-    public int getRating(){
+
+    public int getRating() {
         return this.rating;
     }
-    public void setRating(int rating){
-        this.rating=rating;
+
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 
-    public void addOffer(Offer offer){
+    public void addOffer(Offer offer) {
         this.priceOffers.add(offer);
     }
 
@@ -69,7 +69,7 @@ public class Ride {
             System.out.println(i + ". " + priceOffers.get(i).toString());
         }
         Scanner in = new Scanner(System.in);
-        int selectedOffer =-1;
+        int selectedOffer = -1;
         do {
             System.out.println("Please choose an offer number\nOr enter -1 to exit");
             selectedOffer = in.nextInt();
@@ -77,30 +77,33 @@ public class Ride {
             if (selectedOffer == -1)
                 break;
 
-            if (selectedOffer>priceOffers.size()-1){
+            if (selectedOffer > priceOffers.size() - 1) {
                 System.out.println("invalid choice");
                 continue;
             }
 
             int choice = -1;
             System.out.println("you want to accept?\n1: Accept 2: Reject");
-            choice=in.nextInt();
-            switch (choice){
+            choice = in.nextInt();
+            switch (choice) {
                 case 1 -> acceptedOffer(this.priceOffers.get(selectedOffer));
-                case 2 -> this.priceOffers.remove(selectedOffer) ;
+                case 2 -> this.priceOffers.remove(selectedOffer);
                 default -> System.out.println("please give me an answer.....");
             }
 
-        }while(selectedOffer != -1);
+        } while (selectedOffer != -1);
 
     }
-    public void acceptedOffer(Offer offer){
+
+    public void acceptedOffer(Offer offer) {
         this.driver = offer.getDriver();
         this.price = offer.getOfferedPrice();
         this.priceOffers = null;
     }
 
-
-
-
+    @Override
+    public String toString() {
+        return "Source Area: " + this.source + "\nDestination Area: " + this.destination + "\nStatus: " + this.rideStatus.toString();
+    }
 }
+
