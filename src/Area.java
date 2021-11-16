@@ -1,11 +1,24 @@
+import java.util.ArrayList;
+
 public class Area {
-    String location;
+    private String location;
+    private ArrayList<Driver> pinnedDriver;
+
+    public Area(String location){
+
+        this.location = location;
+        this.pinnedDriver = new ArrayList<>();
+    }
 
     public String getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void addToPinnedDrivers(Driver driver){
+        this.pinnedDriver.add(driver);
     }
+     /**
+      * lesa notify drivers!!!!
+      * */
+
 }

@@ -11,10 +11,8 @@ public class Ride {
     private ArrayList<Offer> priceOffers;
 
     public Ride(String source, String destination){
-        this.source = new Area();
-        this.source.setLocation(source);
-        this.destination = new Area();
-        this.destination.setLocation(destination);
+        this.source = new Area(source);
+        this.destination = new Area(source);
 
         this.rideStatus = RideStatus.PENDING;
         this.driver = null;
