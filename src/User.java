@@ -4,6 +4,22 @@ public abstract class User {
     private String email;
     private String mobileNumber;
 
+    public User(){
+        this.username = null;
+        this.password = null;
+        this.email = null;
+        this.mobileNumber = null;
+    }
+
+    public User(String username,String password,String email,String mobileNumber){
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.mobileNumber = mobileNumber;
+    }
+
+    ///////////////////////////////////// Getters and Setters /////////////////////////////////////
+
     public String getUsername() {
         return username;
     }
