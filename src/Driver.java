@@ -8,6 +8,7 @@ public class Driver extends User{
 
     public Driver(){
         this.activationStatus = false;
+        this.averageRating = 0.0;
     }
 
     public Driver(String username,String password,String email,String mobileNumber,String nationalID,String licenseNumber){
@@ -15,6 +16,7 @@ public class Driver extends User{
         this.nationalID = nationalID;
         this.licenseNumber = licenseNumber;
         this.activationStatus = false;
+        this.averageRating =0.0;
     }
 
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
