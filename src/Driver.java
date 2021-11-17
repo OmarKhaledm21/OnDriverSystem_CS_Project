@@ -8,12 +8,14 @@ public class Driver extends User{
     private boolean activationStatus;
     private ArrayList<Notification> notificationList;
     private Ride ride;
+    private ArrayList<Ride> rides;
 
     public Driver(){
         this.activationStatus = false;
         this.averageRating = 0.0;
         this.notificationList = new ArrayList<>();
         this.ride = null;
+        this.rides = new ArrayList<>();
     }
 
     public Driver(String username,String password,String email,String mobileNumber,String nationalID,String licenseNumber){
@@ -24,6 +26,7 @@ public class Driver extends User{
         this.averageRating =0.0;
         this.notificationList = new ArrayList<>();
         this.ride = null;
+        this.rides = new ArrayList<>();
     }
 
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
@@ -70,7 +73,9 @@ public class Driver extends User{
 
     public void notify(Notification notification){
         if (notification instanceof CustomerAcceptedRideNotification){
-            this.ride = notification.getRide();
+            Ride newRide = notification.getRide();
+            this.ride = newRide;
+            this.rides.add(newRide);
         }
         else {
             this.notificationList.add(notification);
