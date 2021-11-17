@@ -46,5 +46,27 @@ public class Admin extends User{
             }
         }
    }
+   public void suspendUser() {
+       OnDriverSystem system = OnDriverSystem.getSystem();
 
+       Hashtable<String, User> userHashtable = system.getUserList();
+       Hashtable<String, User> inActive = system.getInActiveUsers();
+       boolean loop = true;
+
+       while (loop) {
+           String username = "";
+           System.out.println("Enter UserName of the User/Driver you want to suspend");
+           Scanner in = new Scanner(System.in);
+           username = in.next();
+           if (userHashtable.containsKey(username)) {
+               inActive.put(username, userHashtable.get(username));
+               userHashtable.remove(username);
+               loop=false;
+           } else {
+               System.out.println("User not found please re-try");
+           }
+
+
+       }
+   }
 }
