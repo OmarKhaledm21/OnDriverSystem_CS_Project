@@ -5,13 +5,11 @@ public class Driver extends User{
     private String nationalID;
     private String licenseNumber;
     private double averageRating;
-    private boolean activationStatus;
     private ArrayList<Notification> notificationList;
     private Ride ride;
     private ArrayList<Ride> rides;
 
     public Driver(){
-        this.activationStatus = false;
         this.averageRating = 0.0;
         this.notificationList = new ArrayList<>();
         this.ride = null;
@@ -22,7 +20,6 @@ public class Driver extends User{
         super(username,password,email,mobileNumber);
         this.nationalID = nationalID;
         this.licenseNumber = licenseNumber;
-        this.activationStatus = false;
         this.averageRating =0.0;
         this.notificationList = new ArrayList<>();
         this.ride = null;
@@ -53,14 +50,6 @@ public class Driver extends User{
 
     public void setAverageRating(double averageRating) {
         this.averageRating = averageRating;
-    }
-
-    public boolean isActivationStatus() {
-        return activationStatus;
-    }
-
-    public void setActivationStatus(boolean activationStatus) {
-        this.activationStatus = activationStatus;
     }
 
     public void offerPrice(Ride ride){

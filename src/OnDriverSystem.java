@@ -6,14 +6,14 @@ public class OnDriverSystem {
     private static OnDriverSystem onDriverSystem;
 
     private Hashtable<String,User> userList;
-    private Hashtable<String,Driver> pendingDriver;
+    private Hashtable<String,Driver> unActiveUsers;
     private ArrayList<Area> areaList;
     private User currentUser;
 
 
     private OnDriverSystem(){
         userList = new Hashtable<String,User>();
-        pendingDriver = new Hashtable<String,Driver>();
+        unActiveUsers = new Hashtable<String,Driver>();
         areaList = new ArrayList<>();
         currentUser = null;
 
@@ -68,7 +68,7 @@ public class OnDriverSystem {
         email = user_input.next();
         password = user_input.next();
 
-        while (this.pendingDriver.containsKey(userName) || this.userList.containsKey(userName)){
+        while (this.unActiveUsers.containsKey(userName) || this.userList.containsKey(userName)){
             System.out.println("Username is already in use, Please type a new username");
             userName = user_input.next();
         }
@@ -78,7 +78,7 @@ public class OnDriverSystem {
             String nationalID = user_input.next();
             String licenseNumber = user_input.next();
             user = new Driver(userName,password,email,mobileNumber,nationalID,licenseNumber);
-            this.pendingDriver.put(userName, (Driver) user);
+            this.unActiveUsers.put(userName, (Driver) user);
         }else{
             user = new Customer(userName,password,email,mobileNumber);
             this.userList.put(userName,user);
