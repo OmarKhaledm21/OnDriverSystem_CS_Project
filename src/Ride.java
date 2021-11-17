@@ -100,6 +100,7 @@ public class Ride {
         this.driver = offer.getDriver();
         this.price = offer.getOfferedPrice();
         this.priceOffers = null;
+        this.rideStatus=RideStatus.IN_PROGRESS;
     }
 
     @Override
