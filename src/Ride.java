@@ -10,9 +10,9 @@ public class Ride {
     private Driver driver;
     private ArrayList<Offer> priceOffers;
 
-    public Ride(String source, String destination) {
-        this.source = new Area(source);
-        this.destination = new Area(source);
+    public Ride(Area source, Area destination) {
+        this.source = source;
+        this.destination = destination;
 
         this.rideStatus = RideStatus.PENDING;
         this.driver = null;

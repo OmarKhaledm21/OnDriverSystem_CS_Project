@@ -17,6 +17,10 @@ public class Area {
     public void addToPinnedDrivers(Driver driver){
         this.pinnedDriver.add(driver);
     }
+
+    public boolean isFavouriteDriver(Driver driver){
+        return (pinnedDriver.contains(driver));
+    }
      /**
       * lesa notify drivers!!!!
       * */
