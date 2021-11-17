@@ -87,4 +87,12 @@ public class OnDriverSystem {
 
         System.out.println("User registered successfully");
     }
+    public Hashtable<String,User>getInActiveUsers(){
+        return inActiveUsers;
+    }
+    public Hashtable<String,User>getUserList(){
+        return userList;
+    }
+    
 }
+
