@@ -86,7 +86,7 @@ public class Ride {
             System.out.println("you want to accept?\n1: Accept 2: Reject");
             choice = in.nextInt();
             switch (choice) {
-                case 1 -> acceptedOffer(this.priceOffers.get(selectedOffer));
+                case 1 -> acceptOffer(this.priceOffers.get(selectedOffer));
                 case 2 -> this.priceOffers.remove(selectedOffer);
                 default -> System.out.println("please give me an answer.....");
             }
@@ -95,7 +95,7 @@ public class Ride {
 
     }
 
-    public void acceptedOffer(Offer offer) {
+    public void acceptOffer(Offer offer) {
         this.driver = offer.getDriver();
         this.price = offer.getOfferedPrice();
         this.priceOffers = null;
