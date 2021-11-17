@@ -41,6 +41,7 @@ public class OnDriverSystem {
         this.areaList = areaList;
     }
 
+
     public User login(){
         Scanner user_input = new Scanner(System.in);
         System.out.println("Enter Username and Password Respectively: ");
@@ -116,5 +117,9 @@ public class OnDriverSystem {
                 }
             }
         }
+    }
+
+    public void addArea(Area area){
+        areaList.add(area);
     }
 }

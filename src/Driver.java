@@ -45,6 +45,7 @@ public class Driver extends User{
     }
 
     public double getAverageRating() {
+        setAverageRating();
         return averageRating;
     }
 
@@ -109,6 +110,17 @@ public class Driver extends User{
 
     public void addFavouriteArea(String location){
         Area favouriteArea = new Area(location);
+        boolean found = false;
+        for (Area area : OnDriverSystem.getSystem().getAreaList()){
+            if (location.equals(area.getLocation())){
+                area.addToPinnedDrivers(this);
+                found = true;
+            }
+        }
+        if (!found){
+            favouriteArea.addToPinnedDrivers(this);
+            OnDriverSystem.getSystem().addArea(favouriteArea);
+        }
     }
 
     public void listRatings(){
