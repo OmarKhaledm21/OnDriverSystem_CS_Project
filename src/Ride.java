@@ -25,16 +25,13 @@ public class Ride {
         return source;
     }
 
-
     public Area getDestination() {
         return destination;
     }
 
-
     public double getPrice() {
         return price;
     }
-
 
     public Driver getDriver() {
         return driver;
@@ -62,6 +59,10 @@ public class Ride {
 
     public void addOffer(Offer offer) {
         this.priceOffers.add(offer);
+    }
+
+    public String getRideStatus(){
+        return this.rideStatus.toString();
     }
 
     public void viewOffers() {

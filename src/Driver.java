@@ -48,8 +48,20 @@ public class Driver extends User{
         return averageRating;
     }
 
-    public void setAverageRating(double averageRating) {
-        this.averageRating = averageRating;
+    public void setRide(Ride ride){
+        this.ride = ride;
+    }
+
+    public Ride getRide(){
+        return this.ride;
+    }
+
+    public void setAverageRating() {
+        int sumRating = 0;
+        for (Ride ride : rides){
+            sumRating += ride.getRating();
+        }
+        this.averageRating = sumRating / rides.size();
     }
 
     public void offerPrice(Ride ride){
@@ -93,6 +105,19 @@ public class Driver extends User{
                 notificationList.remove(notificationIndex);
             }
         }
+    }
 
+    public void addFavouriteArea(String location){
+        Area favouriteArea = new Area(location);
+    }
+
+    public void listRatings(){
+        for (Ride ride : rides){
+            System.out.println(ride.toString() + "\nRating: " + ride.getRating());
+        }
+    }
+
+    public void RideStatus(){
+        System.out.println(this.ride.getRideStatus());
     }
 }
