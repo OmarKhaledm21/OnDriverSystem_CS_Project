@@ -41,6 +41,10 @@ public class Ride {
         this.driver = driver;
     }
 
+    public void setRideStatus(RideStatus rideStatus) {
+        this.rideStatus = rideStatus;
+    }
+
     public ArrayList<Offer> getPriceOffers() {
         return priceOffers;
     }

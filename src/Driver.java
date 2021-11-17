@@ -75,9 +75,10 @@ public class Driver extends User{
 
     public void notify(Notification notification){
         if (notification instanceof CustomerAcceptedRideNotification){
-            Ride newRide = notification.getRide();
-            this.ride = newRide;
-            this.rides.add(newRide);
+            this.ride = notification.getRide();
+        }else if(notification instanceof FinishedRideNotification){
+            this.rides.add(ride);
+            this.ride = null;
         }
         else {
             this.notificationList.add(notification);

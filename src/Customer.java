@@ -47,18 +47,36 @@ public class Customer extends User {
 
     public void checkOffers(){
         System.out.println("Checking for available offers....");
+        Scanner input = new Scanner(System.in);
         ArrayList<Offer> offers = this.ride.getPriceOffers();
+
         if(offers != null){
             for(int i = 0; i<offers.size(); i++){
                 System.out.println(i+". "+offers.get(i).toString());
                 System.out.println("Average Rating: "+offers.get(i).getDriver().getAverageRating());
             }
-
-
-
+            int choice = input.nextInt();
+            System.out.println("Type the number of offer you would like to accept: ");
+            if(choice >= 0 && choice <offers.size()){
+                Offer acceptedOffer = offers.get(choice);
+                acceptedOffer.getDriver().notify(new CustomerAcceptedRideNotification(this.ride));
+                this.ride.setRideStatus(RideStatus.IN_PROGRESS);
+            }else{
+                System.out.println("Invalid number!");
+            }
 
         }else{
             System.out.println("No offers for this ride yet!");
         }
+    }
+
+    public void endRide(){
+        if(this.ride!=null){
+            this.ride.setRideStatus(RideStatus.FINISHED);
+            System.out.println("Rate the ride: ");
+            rateRide();
+            this.ride.getDriver().notify(new FinishedRideNotification(this.ride));
+        }
+        ride = null;
     }
 }
