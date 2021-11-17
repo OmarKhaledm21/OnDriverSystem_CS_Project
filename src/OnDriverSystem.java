@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Scanner;
+import java.util.*;
 
 public class OnDriverSystem {
     private static OnDriverSystem onDriverSystem;
@@ -25,6 +23,22 @@ public class OnDriverSystem {
             onDriverSystem = new OnDriverSystem();
         }
         return onDriverSystem;
+    }
+
+    public Hashtable<String,User>getInActiveUsers(){
+        return inActiveUsers;
+    }
+
+    public Hashtable<String,User>getUserList(){
+        return userList;
+    }
+
+    public ArrayList<Area> getAreaList() {
+        return areaList;
+    }
+
+    public void setAreaList(ArrayList<Area> areaList) {
+        this.areaList = areaList;
     }
 
     public User login(){
@@ -87,12 +101,20 @@ public class OnDriverSystem {
 
         System.out.println("User registered successfully");
     }
-    public Hashtable<String,User>getInActiveUsers(){
-        return inActiveUsers;
-    }
-    public Hashtable<String,User>getUserList(){
-        return userList;
-    }
-    
-}
 
+    public void newRideNotify(Ride ride){
+        for (String user_name : userList.keySet()){
+            User current = userList.get(user_name);
+            if(current instanceof Driver){
+                Driver driver = (Driver) current;
+                if(driver.getRide()==null){
+                    if(ride.getSource().isFavouriteDriver(driver)){
+                        driver.notify(new FavAreaRideNotification(ride));
+                    }else{
+                        driver.notify(new NewRideNotification(ride));
+                    }
+                }
+            }
+        }
+    }
+}
