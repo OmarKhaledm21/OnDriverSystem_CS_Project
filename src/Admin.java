@@ -1,5 +1,4 @@
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Scanner;
 
 public class Admin extends User{
@@ -8,13 +7,14 @@ public class Admin extends User{
     }
 
     public void verifyRegistration(){
-        OnDriverSystem system =OnDriverSystem.getSystem();
+        OnDriverSystem system = OnDriverSystem.getSystem();
         Hashtable<String,User> inActive = system.getInActiveUsers();
 
         int choice=0;
         Scanner in = new Scanner(System.in);
-        for (String key :inActive.keySet()){
+        for (String key: inActive.keySet()){
             System.out.println("What you want to do?\n1- to Verify 2- to Delete (anything else to skip)");
+            choice = in.nextInt();
             switch (choice){
                 case 1:
                     system.getUserList().put(key,inActive.get(key));
@@ -31,16 +31,32 @@ public class Admin extends User{
         }
     }
 
-    public void listRegistrations(){
-        OnDriverSystem system =OnDriverSystem.getSystem();
-        Hashtable<String,User> inActive = system.getInActiveUsers();
+    public void listInActiveUsers(){
+        OnDriverSystem system = OnDriverSystem.getSystem();
+        Hashtable<String, User> inActive = system.getInActiveUsers();
 
         int count=0;
-        for (String key :inActive.keySet()){
+        for (String key: inActive.keySet()){
             count++;
             if (inActive.get(key) instanceof Customer){
                 System.out.println(count+ " Customer : " + key );
             }else if (inActive.get(key) instanceof Driver){
+                System.out.println( count + ": Driver : " + key );
+            }
+        }
+    }
+
+
+    public void listActiveUsers(){
+        OnDriverSystem system = OnDriverSystem.getSystem();
+        Hashtable<String, User> users = system.getUserList();
+
+        int count = 0;
+        for (String key: users.keySet()){
+            count++;
+            if (users.get(key) instanceof Customer){
+                System.out.println(count+ " Customer : " + key );
+            } else if (users.get(key) instanceof Driver){
                 System.out.println( count + ": Driver : " + key );
             }
         }
@@ -55,16 +71,18 @@ public class Admin extends User{
 
         while (loop) {
             String username = "";
+            listActiveUsers();
             System.out.println("Enter UserName of the User/Driver you want to suspend");
             Scanner in = new Scanner(System.in);
             username = in.next();
+
             if (userHashtable.containsKey(username)) {
                 inActive.put(username, userHashtable.get(username));
                 userHashtable.remove(username);
-                loop=false;
-            } else {
+                loop = false;
+            } else if(!username.equals("exit")){
                 System.out.println("User not found please re-try");
-            }
+            } else{ loop = false; }
         }
     }
 }

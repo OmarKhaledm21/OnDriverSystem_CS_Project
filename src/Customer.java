@@ -16,16 +16,14 @@ public class Customer extends User {
 
         System.out.println("Enter source and destination areas: ");
         String src=input.next(),dest=input.next();
-        Area source = null,destination = new Area(dest);
+        Area source = new Area(src), destination = new Area(dest);
 
-        if(areas!=null){
+        if(areas != null){
             for(Area area : areas){
                 if(area.getLocation().equals(src)){
                     source = area;
                 }
             }
-        }else{
-            source = new Area(src);
         }
 
         this.ride = new Ride(source,destination);

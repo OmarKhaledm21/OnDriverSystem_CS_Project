@@ -19,10 +19,6 @@ public class Area {
     }
 
     public boolean isFavouriteDriver(Driver driver){
-        return (pinnedDriver.contains(driver));
+        return pinnedDriver.contains(driver);
     }
-     /**
-      * lesa notify drivers!!!!
-      * */
-
 }

@@ -7,13 +7,13 @@ public class Driver extends User{
     private double averageRating;
     private ArrayList<Notification> notificationList;
     private Ride ride;
-    private ArrayList<Ride> rides;
+    private ArrayList<Ride> ridesHistory;
 
     public Driver(){
         this.averageRating = 0.0;
         this.notificationList = new ArrayList<>();
         this.ride = null;
-        this.rides = new ArrayList<>();
+        this.ridesHistory = new ArrayList<>();
     }
 
     public Driver(String username,String password,String email,String mobileNumber,String nationalID,String licenseNumber){
@@ -23,7 +23,7 @@ public class Driver extends User{
         this.averageRating =0.0;
         this.notificationList = new ArrayList<>();
         this.ride = null;
-        this.rides = new ArrayList<>();
+        this.ridesHistory = new ArrayList<>();
     }
 
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
@@ -59,10 +59,10 @@ public class Driver extends User{
 
     public void setAverageRating() {
         int sumRating = 0;
-        for (Ride ride : rides){
+        for (Ride ride : ridesHistory){
             sumRating += ride.getRating();
         }
-        this.averageRating = sumRating / rides.size();
+        this.averageRating = sumRating / ridesHistory.size();
     }
 
     public void offerPrice(Ride ride){
@@ -77,7 +77,7 @@ public class Driver extends User{
         if (notification instanceof CustomerAcceptedRideNotification){
             this.ride = notification.getRide();
         }else if(notification instanceof FinishedRideNotification){
-            this.rides.add(ride);
+            this.ridesHistory.add(ride);
             this.ride = null;
         }
         else {
@@ -87,7 +87,7 @@ public class Driver extends User{
 
     public void manageNotification(){
         for (int i = 0; i < this.notificationList.size(); i++){
-            System.out.println(i + ". " + this.notificationList.get(i).getRide().toString());
+            System.out.println(i + ". " + this.notificationList.get(i).toString());
         }
         Scanner input = new Scanner(System.in);
         int choice = -1;
@@ -125,7 +125,7 @@ public class Driver extends User{
     }
 
     public void listRatings(){
-        for (Ride ride : rides){
+        for (Ride ride : ridesHistory){
             System.out.println(ride.toString() + "\nRating: " + ride.getRating());
         }
     }

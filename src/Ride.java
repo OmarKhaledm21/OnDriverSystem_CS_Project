@@ -75,7 +75,7 @@ public class Ride {
         }
         Scanner in = new Scanner(System.in);
         int selectedOffer = -1;
-        do {
+        while(true) {
             System.out.println("Please choose an offer number\nOr enter -1 to exit");
             selectedOffer = in.nextInt();
 
@@ -95,9 +95,7 @@ public class Ride {
                 case 2 -> this.priceOffers.remove(selectedOffer);
                 default -> System.out.println("please give me an answer.....");
             }
-
-        } while (selectedOffer != -1);
-
+        }
     }
 
     public void acceptOffer(Offer offer) {
