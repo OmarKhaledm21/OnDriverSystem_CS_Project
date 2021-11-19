@@ -36,12 +36,17 @@ public class Admin extends User{
         Hashtable<String, User> inActive = system.getInActiveUsers();
 
         int count=0;
-        for (String key: inActive.keySet()){
-            count++;
-            if (inActive.get(key) instanceof Customer){
-                System.out.println(count+ " Customer : " + key );
-            }else if (inActive.get(key) instanceof Driver){
-                System.out.println( count + ": Driver : " + key );
+        if (inActive.isEmpty()){
+            System.out.println("No inActive Users at the moment");
+        }
+        else{
+            for (String key: inActive.keySet()){
+                count++;
+                if (inActive.get(key) instanceof Customer){
+                    System.out.println(count+ " Customer : " + key );
+                }else if (inActive.get(key) instanceof Driver){
+                    System.out.println( count + ": Driver : " + key );
+                }
             }
         }
     }
@@ -52,12 +57,19 @@ public class Admin extends User{
         Hashtable<String, User> users = system.getUserList();
 
         int count = 0;
-        for (String key: users.keySet()){
-            count++;
-            if (users.get(key) instanceof Customer){
-                System.out.println(count+ " Customer : " + key );
-            } else if (users.get(key) instanceof Driver){
-                System.out.println( count + ": Driver : " + key );
+        if (users.isEmpty()){
+            System.out.println("User list is Empty");
+        }
+        else{
+            for (String key: users.keySet()){
+                count++;
+                if (users.get(key) instanceof Customer){
+                    System.out.println(count+ " Customer : " + key );
+                } else if (users.get(key) instanceof Driver){
+                    System.out.println( count + ": Driver : " + key );
+                } else if (users.get(key) instanceof Admin){
+                    System.out.println( count + ": Admin : " + key );
+                }
             }
         }
     }
@@ -88,6 +100,33 @@ public class Admin extends User{
 
     @Override
     public void displayMenu() {
+        Admin admin = this;
+        int choice=69;
+        Scanner in = new Scanner(System.in);
+        while (choice!=0){
+            System.out.println("Welcome "+this.getUsername()+" there is your menu \n" +
+                    "1- List Active Users\n2- List inActive Users\n3- Suspend User\n4- Verify Registration\n0- Exit");
+            choice=in.nextInt();
+            switch (choice){
+                case 0 : break;
+                case 1:
+                    listActiveUsers();
+                    break;
+                case 2:
+                    listInActiveUsers();
+                    break;
+                case 3 :
+                    suspendUser();
+                    break;
+                case 4 :
+                   verifyRegistration();
+                   break;
+
+                default:
+                    System.out.println("Invalid Choice");
+                    break;
+             }
+        }
 
     }
 }
