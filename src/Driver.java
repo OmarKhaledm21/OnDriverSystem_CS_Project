@@ -90,20 +90,26 @@ public class Driver extends User{
                 this.ride = notification.getRide();
                 this.ride.setDriver(this);
         }else {
-            if (notification.getRide().getRideStatus().equals(RideStatus.PENDING))
                 if (notification instanceof FinishedRideNotification) {
-                this.ridesHistory.add(ride);
-                this.ride = null;
-            } else {
-                this.notificationList.add(notification);
+                    this.ridesHistory.add(ride);
+                    this.ride = null;
+                } else {
+                    this.notificationList.add(notification);
+                }
             }
-        }
     }
 
     public void manageNotification(){
         int notificationIndex = 0;
         int choice = 0;
+
         while (notificationIndex != -1) {
+            for (int i = 0; i < notificationList.size(); i++){
+                if (!(notificationList.get(i).getRide().getRideStatus().equals(RideStatus.PENDING))) {
+                    notificationList.remove(i);
+                    i--;
+                }
+            }
             if (notificationList.isEmpty()) {
                 System.out.println("No new notifications");
                 break;
