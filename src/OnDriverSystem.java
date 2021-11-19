@@ -8,7 +8,6 @@ public class OnDriverSystem {
     private ArrayList<Area> areaList;
     private User currentUser;
 
-
     private OnDriverSystem(){
         userList = new Hashtable<String,User>();
         inActiveUsers = new Hashtable<String,User>();
@@ -35,6 +34,10 @@ public class OnDriverSystem {
 
     public ArrayList<Area> getAreaList() {
         return areaList;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
     }
 
     public void setAreaList(ArrayList<Area> areaList) {
@@ -65,9 +68,6 @@ public class OnDriverSystem {
         }else{
             System.out.println("User is not registered in the system!");
         }
-
-
-
         return this.currentUser;
     }
 

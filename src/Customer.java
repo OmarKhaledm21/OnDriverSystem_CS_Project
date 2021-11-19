@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Customer extends User {
+public class Customer extends User{
     private Ride ride;
 
     public Customer(String username,String password,String email,String mobileNumber){
@@ -76,5 +76,10 @@ public class Customer extends User {
             this.ride.getDriver().notify(new FinishedRideNotification(this.ride));
         }
         ride = null;
+    }
+
+    @Override
+    public void displayMenu() {
+
     }
 }

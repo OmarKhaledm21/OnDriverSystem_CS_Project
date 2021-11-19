@@ -85,4 +85,9 @@ public class Admin extends User{
             } else{ loop = false; }
         }
     }
+
+    @Override
+    public void displayMenu() {
+
+    }
 }

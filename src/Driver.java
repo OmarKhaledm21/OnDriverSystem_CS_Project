@@ -133,4 +133,9 @@ public class Driver extends User{
     public void RideStatus(){
         System.out.println(this.ride.getRideStatus());
     }
+
+    @Override
+    public void displayMenu() {
+
+    }
 }

@@ -1,4 +1,4 @@
-public abstract class User {
+public abstract class User implements IMenu{
     private String username;
     private String password;
     private String email;
