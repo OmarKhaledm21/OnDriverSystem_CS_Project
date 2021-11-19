@@ -35,8 +35,17 @@ public class Customer extends User{
         Scanner input = new Scanner(System.in);
         System.out.println("Enter your rating 1-5: ");
         int rating = input.nextInt();
-        this.ride.setRating(rating);
-        System.out.println("You rate this ride "+rating+" out of 5!");
+        while (true){
+            if(rating >0 && rating <= 5){
+                this.ride.setRating(rating);
+                System.out.println("You rate this ride "+rating+" out of 5!");
+                break;
+            }else{
+                System.out.println("Please rate the ride from 1 to 5!");
+                rating = input.nextInt();
+            }
+        }
+
     }
 
     public void checkAverageRating(){
@@ -74,12 +83,36 @@ public class Customer extends User{
             System.out.println("Rate the ride: ");
             rateRide();
             this.ride.getDriver().notify(new FinishedRideNotification(this.ride));
+        }else{
+            System.out.println("You are not in a ride currently!");
         }
         ride = null;
     }
 
     @Override
     public void displayMenu() {
-
+        Scanner input = new Scanner(System.in);
+        System.out.println("Welcome "+this.getUsername()+" \n1- Request ride\n2- Check offers on my ride\n3- End ride\n4- Logout\n");
+        int choice = input.nextInt();
+        while (choice!=4) {
+            switch (choice) {
+                case 1:
+                    requestRide();
+                    break;
+                case 2:
+                    if(this.ride!=null){checkOffers();}
+                    else{
+                        System.out.println("You are not in a ride currently!");
+                    }
+                    break;
+                case 3:
+                    endRide();
+                    break;
+                default:
+                    break;
+            }
+            System.out.println("Welcome "+this.getUsername()+" \n1- Request ride\n2- Check offers on my ride\n3- End ride\n4- Logout\n");
+            choice = input.nextInt();
+        }
     }
 }
