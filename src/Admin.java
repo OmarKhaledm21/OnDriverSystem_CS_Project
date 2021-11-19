@@ -11,7 +11,7 @@ public class Admin extends User{
         Hashtable<String,User> inActive = system.getInActiveUsers();
         Hashtable<String,User> systemUserList = system.getUserList();
         Hashtable<String,User> clonedUsers = (Hashtable<String, User>) inActive.clone();
-        int choice=0;
+        int choice = 0;
         Scanner in = new Scanner(System.in);
         for (String key: clonedUsers.keySet()){
             if (clonedUsers.get(key) instanceof Driver) {
@@ -40,7 +40,7 @@ public class Admin extends User{
         OnDriverSystem system = OnDriverSystem.getSystem();
         Hashtable<String, User> inActive = system.getInActiveUsers();
 
-        int count=0;
+        int count = 0;
         if (inActive.isEmpty()){
             System.out.println("No inActive Users at the moment");
         }
@@ -48,7 +48,7 @@ public class Admin extends User{
             for (String key: inActive.keySet()){
                 count++;
                 if (inActive.get(key) instanceof Customer){
-                    System.out.println(count+ ": Customer : " + key );
+                    System.out.println(count + ": Customer : " + key );
                 }else if (inActive.get(key) instanceof Driver){
                     System.out.println( count + ": Driver : " + key );
                 }
@@ -69,7 +69,7 @@ public class Admin extends User{
             for (String key: users.keySet()){
                 count++;
                 if (users.get(key) instanceof Customer){
-                    System.out.println(count+ ": Customer : " + key );
+                    System.out.println(count + ": Customer : " + key );
                 } else if (users.get(key) instanceof Driver){
                     System.out.println( count + ": Driver : " + key );
                 } else if (users.get(key) instanceof Admin){
@@ -106,10 +106,10 @@ public class Admin extends User{
     @Override
     public void displayMenu() {
         Admin admin = this;
-        int choice=69;
+        int choice= 69;
         Scanner in = new Scanner(System.in);
         while (choice!=0){
-            System.out.println("Welcome "+this.getUsername()+" there is your menu \n" +
+            System.out.println("Welcome " + this.getUsername() + " there is your menu \n" +
                     "1- List Active Users\n2- List inActive Users\n3- Suspend User\n4- Verify Registration\n0- Exit");
             choice=in.nextInt();
             switch (choice){
@@ -126,7 +126,6 @@ public class Admin extends User{
                 case 4 :
                    verifyRegistration();
                    break;
-
                 default:
                     System.out.println("Invalid Choice");
                     break;

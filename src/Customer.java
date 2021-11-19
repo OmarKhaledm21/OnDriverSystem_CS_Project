@@ -37,9 +37,9 @@ public class Customer extends User{
         System.out.println("Enter your rating 1-5: ");
         int rating = input.nextInt();
         while (true){
-            if(rating >0 && rating <= 5){
+            if(rating > 0 && rating <= 5){
                 this.ride.setRating(rating);
-                System.out.println("You rate this ride "+rating+" out of 5!");
+                System.out.println("You rate this ride " + rating + " out of 5!");
                 break;
             }else{
                 System.out.println("Please rate the ride from 1 to 5!");
@@ -50,7 +50,7 @@ public class Customer extends User{
     }
 
     public void checkAverageRating(){
-        System.out.println("Average rating: "+this.ride.getDriver().getAverageRating());
+        System.out.println("Average rating: " + this.ride.getDriver().getAverageRating());
     }
 
     public void checkOffers(){
@@ -58,15 +58,15 @@ public class Customer extends User{
         Scanner input = new Scanner(System.in);
         ArrayList<Offer> offers = this.ride.getPriceOffers();
 
-        if(offers.size()>0){
-            for(int i = 0; i<offers.size(); i++){
-                System.out.println(i+". "+offers.get(i).toString());
-                System.out.println("Average Rating: "+offers.get(i).getDriver().getAverageRating());
+        if(offers.size() > 0){
+            for(int i = 0; i < offers.size(); i++){
+                System.out.println(i + 1 + ". " + offers.get(i).toString());
+                System.out.println("Average Rating: " +offers.get(i).getDriver().getAverageRating());
             }
             System.out.println("Type the number of offer you would like to accept or -1 for exit : ");
             int choice = input.nextInt();
-            if(choice >= 0 && choice <offers.size()){
-                Offer acceptedOffer = offers.get(choice);
+            if(choice >= 0 && choice <= offers.size()){
+                Offer acceptedOffer = offers.get(choice - 1);
                 acceptedOffer.getDriver().notify(new CustomerAcceptedRideNotification(this.ride));
                 this.ride.setRideStatus(RideStatus.IN_PROGRESS);
             }else if(choice == -1){
@@ -107,15 +107,15 @@ public class Customer extends User{
     @Override
     public void displayMenu() {
         Scanner input = new Scanner(System.in);
-        System.out.println("Welcome "+this.getUsername()+" \n1- Request ride\n2- Check offers on my ride\n3- End ride\n4- Get current ride status\n5- Logout\n");
+        System.out.println("Welcome " + this.getUsername() + " \n1- Request ride\n2- Check offers on my ride\n3- End ride\n4- Get current ride status\n5- Logout");
         int choice = input.nextInt();
-        while (choice!=5) {
+        while (choice != 5) {
             switch (choice) {
                 case 1:
                     requestRide();
                     break;
                 case 2:
-                    if(this.ride!=null){checkOffers();}
+                    if(this.ride != null){checkOffers();}
                     else{
                         System.out.println("You are not in a ride currently!");
                     }
@@ -125,10 +125,11 @@ public class Customer extends User{
                     break;
                 case 4:
                     getCurrentRideStatus();
+                    break;
                 default:
                     break;
             }
-            System.out.println("Welcome "+this.getUsername()+" \n1- Request ride\n2- Check offers on my ride\n3- End ride\n4- Get current ride status\n5- Logout\n");
+            System.out.println("Welcome " + this.getUsername() + " \n1- Request ride\n2- Check offers on my ride\n3- End ride\n4- Get current ride status\n5- Logout");
             choice = input.nextInt();
         }
     }
