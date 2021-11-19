@@ -9,22 +9,23 @@ public class Admin extends User{
     public void verifyRegistration(){
         OnDriverSystem system = OnDriverSystem.getSystem();
         Hashtable<String,User> inActive = system.getInActiveUsers();
-
+        Hashtable<String,User> systemUserList = system.getUserList();
+        Hashtable<String,User> clonedUsers = (Hashtable<String, User>) inActive.clone();
         int choice=0;
         Scanner in = new Scanner(System.in);
-        for (String key: inActive.keySet()){
-            if (inActive.get(key) instanceof Driver)
-                System.out.println("Driver : " + key );
-            else if (inActive.get(key) instanceof Customer)
-                System.out.println("Customer : " + key );
+        for (String key: clonedUsers.keySet()){
+            if (clonedUsers.get(key) instanceof Driver) {
+                System.out.println("Driver : " + key);
+            } else if (clonedUsers.get(key) instanceof Customer) {
+                System.out.println("Customer : " + key);
+            }
             System.out.println("What you want to do?\n1- to Verify 2- to Delete (anything else to skip)");
             choice = in.nextInt();
             switch (choice){
                 case 1:
-                    system.getUserList().put(key,inActive.get(key));
+                    systemUserList.put(key,inActive.get(key));
                     inActive.remove(key);
                     break;
-
                 case 2:
                     inActive.remove(key);
                     break;

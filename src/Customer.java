@@ -29,6 +29,7 @@ public class Customer extends User{
         this.ride = new Ride(source,destination);
 
         system.newRideNotify(this.ride);
+        System.out.println("Ride is requested, waiting for offers from drivers!");
     }
 
     public void rateRide(){
@@ -57,18 +58,20 @@ public class Customer extends User{
         Scanner input = new Scanner(System.in);
         ArrayList<Offer> offers = this.ride.getPriceOffers();
 
-        if(offers != null){
+        if(offers.size()>0){
             for(int i = 0; i<offers.size(); i++){
                 System.out.println(i+". "+offers.get(i).toString());
                 System.out.println("Average Rating: "+offers.get(i).getDriver().getAverageRating());
             }
+            System.out.println("Type the number of offer you would like to accept or -1 for exit : ");
             int choice = input.nextInt();
-            System.out.println("Type the number of offer you would like to accept: ");
             if(choice >= 0 && choice <offers.size()){
                 Offer acceptedOffer = offers.get(choice);
                 acceptedOffer.getDriver().notify(new CustomerAcceptedRideNotification(this.ride));
                 this.ride.setRideStatus(RideStatus.IN_PROGRESS);
-            }else{
+            }else if(choice == -1){
+                System.out.println("Back to menu!");
+            }else {
                 System.out.println("Invalid number!");
             }
 
@@ -79,22 +82,34 @@ public class Customer extends User{
 
     public void endRide(){
         if(this.ride!=null){
-            this.ride.setRideStatus(RideStatus.FINISHED);
-            System.out.println("Rate the ride: ");
-            rateRide();
-            this.ride.getDriver().notify(new FinishedRideNotification(this.ride));
+            if(this.ride.getRideStatus().equals( RideStatus.PENDING)){
+                System.out.println("Ride cancelled");
+            }else{
+                this.ride.setRideStatus(RideStatus.FINISHED);
+                System.out.println("Rate the ride: ");
+                rateRide();
+                this.ride.getDriver().notify(new FinishedRideNotification(this.ride));
+            }
         }else{
             System.out.println("You are not in a ride currently!");
         }
         ride = null;
     }
 
+    public void getCurrentRideStatus() {
+        if (this.ride == null) {
+            System.out.println("You are not in a ride currently!");
+        } else {
+            System.out.println("The current ride is: " + this.ride.getRideStatus());
+        }
+    }
+
     @Override
     public void displayMenu() {
         Scanner input = new Scanner(System.in);
-        System.out.println("Welcome "+this.getUsername()+" \n1- Request ride\n2- Check offers on my ride\n3- End ride\n4- Logout\n");
+        System.out.println("Welcome "+this.getUsername()+" \n1- Request ride\n2- Check offers on my ride\n3- End ride\n4- Get current ride status\n5- Logout\n");
         int choice = input.nextInt();
-        while (choice!=4) {
+        while (choice!=5) {
             switch (choice) {
                 case 1:
                     requestRide();
@@ -108,10 +123,12 @@ public class Customer extends User{
                 case 3:
                     endRide();
                     break;
+                case 4:
+                    getCurrentRideStatus();
                 default:
                     break;
             }
-            System.out.println("Welcome "+this.getUsername()+" \n1- Request ride\n2- Check offers on my ride\n3- End ride\n4- Logout\n");
+            System.out.println("Welcome "+this.getUsername()+" \n1- Request ride\n2- Check offers on my ride\n3- End ride\n4- Get current ride status\n5- Logout\n");
             choice = input.nextInt();
         }
     }

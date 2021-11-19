@@ -46,6 +46,7 @@ public class OnDriverSystem {
 
 
     public User login(){
+        this.currentUser = null;
         Scanner user_input = new Scanner(System.in);
         System.out.println("Enter Username and Password Respectively: ");
         String userName,password;

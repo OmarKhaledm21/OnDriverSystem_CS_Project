@@ -65,8 +65,8 @@ public class Ride {
         this.priceOffers.add(offer);
     }
 
-    public String getRideStatus(){
-        return this.rideStatus.toString();
+    public RideStatus getRideStatus(){
+        return this.rideStatus;
     }
 
     public void viewOffers() {
@@ -107,7 +107,7 @@ public class Ride {
 
     @Override
     public String toString() {
-        return "Source Area: " + this.source + "\nDestination Area: " + this.destination + "\nStatus: " + this.rideStatus.toString();
+        return "Source Area: " + this.source.getLocation() + "\nDestination Area: " + this.destination.getLocation() + "\nStatus: " + this.rideStatus.toString();
     }
 }
 

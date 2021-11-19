@@ -57,12 +57,24 @@ public class Driver extends User{
         return this.ride;
     }
 
+    public void getCurrentRideStatus() {
+        if (this.ride == null) {
+            System.out.println("You are not in a ride currently!");
+        } else {
+            System.out.println("The current ride is: " + this.ride.getRideStatus());
+        }
+    }
+
     public void setAverageRating() {
         int sumRating = 0;
-        for (Ride ride : ridesHistory){
+        for (Ride ride : ridesHistory) {
             sumRating += ride.getRating();
         }
-        this.averageRating = sumRating / ridesHistory.size();
+        if (ridesHistory.size() == 0) {
+            this.averageRating = 0;
+        } else {
+            this.averageRating = sumRating / ridesHistory.size();
+        }
     }
 
     public void offerPrice(Ride ride){
@@ -76,6 +88,7 @@ public class Driver extends User{
     public void notify(Notification notification){
         if (notification instanceof CustomerAcceptedRideNotification){
             this.ride = notification.getRide();
+            this.ride.setDriver(this);
         }else if(notification instanceof FinishedRideNotification){
             this.ridesHistory.add(ride);
             this.ride = null;
@@ -95,14 +108,14 @@ public class Driver extends User{
             }
             Scanner input = new Scanner(System.in);
             int choice = -1;
-            int notificationIndex;
+            int notificationIndex=0;
 
             while (true){
                 System.out.println("Please enter ride number \nEnter -1 to exit");
                 notificationIndex = input.nextInt();
                 if (notificationIndex == -1)
                     break;
-                if (notificationIndex < notificationList.size() - 1){
+                if (notificationIndex < notificationList.size()){
                     System.out.println("1- Offer Price 2- Reject Ride");
                     choice = input.nextInt();
                     if (choice == 1){
