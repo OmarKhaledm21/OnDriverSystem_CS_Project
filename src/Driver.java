@@ -86,25 +86,30 @@ public class Driver extends User{
     }
 
     public void manageNotification(){
-        for (int i = 0; i < this.notificationList.size(); i++){
-            System.out.println(i + ". " + this.notificationList.get(i).toString());
+        if(notificationList.isEmpty()){
+            System.out.println("No new notifications");
         }
-        Scanner input = new Scanner(System.in);
-        int choice = -1;
-        int notificationIndex;
+        else{
+            for (int i = 0; i < this.notificationList.size(); i++){
+                System.out.println(i + ". " + this.notificationList.get(i).toString());
+            }
+            Scanner input = new Scanner(System.in);
+            int choice = -1;
+            int notificationIndex;
 
-        while (true){
-            System.out.println("Please enter ride number \nEnter -1 to exit");
-            notificationIndex = input.nextInt();
-            if (notificationIndex == -1)
-                break;
-            if (notificationIndex < notificationList.size() - 1){
-                System.out.println("1- Offer Price 2- Reject Ride");
-                choice = input.nextInt();
-                if (choice == 1){
-                    offerPrice(notificationList.get(notificationIndex).getRide());
+            while (true){
+                System.out.println("Please enter ride number \nEnter -1 to exit");
+                notificationIndex = input.nextInt();
+                if (notificationIndex == -1)
+                    break;
+                if (notificationIndex < notificationList.size() - 1){
+                    System.out.println("1- Offer Price 2- Reject Ride");
+                    choice = input.nextInt();
+                    if (choice == 1){
+                        offerPrice(notificationList.get(notificationIndex).getRide());
+                    }
+                    notificationList.remove(notificationIndex);
                 }
-                notificationList.remove(notificationIndex);
             }
         }
     }
@@ -128,8 +133,13 @@ public class Driver extends User{
     }
 
     public void listRatings(){
-        for (Ride ride : ridesHistory){
-            System.out.println(ride.toString() + "\nRating: " + ride.getRating());
+        if(ridesHistory.isEmpty()){
+            System.out.println("No rides");
+        }
+        else{
+            for (Ride ride : ridesHistory){
+                System.out.println(ride.toString() + "\nRating: " + ride.getRating());
+            }
         }
     }
 
@@ -139,10 +149,10 @@ public class Driver extends User{
 
     @Override
     public void displayMenu() {
-        System.out.println("1. View and manage notifications\n2. View rides history\n3. Add a favourite area\n4. logout");
         Scanner input = new Scanner(System.in);
         int choice = 0;
         while(choice != 4){
+            System.out.println("1. View and manage notifications\n2. View rides history\n3. Add a favourite area\n4. logout");
             choice = input.nextInt();
             input.nextLine();
             switch (choice) {
@@ -155,6 +165,7 @@ public class Driver extends User{
                 case 3:
                     addFavouriteArea();
                 default:
+                    System.out.println("Invalid choice");
                     continue;
             }
         }
