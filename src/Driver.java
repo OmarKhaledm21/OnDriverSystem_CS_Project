@@ -142,7 +142,7 @@ public class Driver extends User{
         System.out.println("1. View and manage notifications\n2. View rides history\n3. Add a favourite area\n4. logout");
         Scanner input = new Scanner(System.in);
         int choice = 0;
-        while(choice != 3){
+        while(choice != 4){
             choice = input.nextInt();
             input.nextLine();
             switch (choice) {
