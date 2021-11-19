@@ -109,7 +109,10 @@ public class Driver extends User{
         }
     }
 
-    public void addFavouriteArea(String location){
+    public void addFavouriteArea(){
+        Scanner input = new Scanner(System.in);
+        System.out.print("Enter area name: ");
+        String location = input.nextLine();
         Area favouriteArea = new Area(location);
         boolean found = false;
         for (Area area : OnDriverSystem.getSystem().getAreaList()){
@@ -136,6 +139,24 @@ public class Driver extends User{
 
     @Override
     public void displayMenu() {
-
+        System.out.println("1. View and manage notifications\n2. View rides history\n3. Add a favourite area\n4. logout");
+        Scanner input = new Scanner(System.in);
+        int choice = 0;
+        while(choice != 3){
+            choice = input.nextInt();
+            input.nextLine();
+            switch (choice) {
+                case 1:
+                    manageNotification();
+                    break;
+                case 2:
+                    listRatings();
+                    break;
+                case 3:
+                    addFavouriteArea();
+                default:
+                    continue;
+            }
+        }
     }
 }
