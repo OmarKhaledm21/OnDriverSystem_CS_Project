@@ -13,6 +13,10 @@ public class Admin extends User{
         int choice=0;
         Scanner in = new Scanner(System.in);
         for (String key: inActive.keySet()){
+            if (inActive.get(key) instanceof Driver)
+                System.out.println("Driver : " + key );
+            else if (inActive.get(key) instanceof Customer)
+                System.out.println("Customer : " + key );
             System.out.println("What you want to do?\n1- to Verify 2- to Delete (anything else to skip)");
             choice = in.nextInt();
             switch (choice){
@@ -43,7 +47,7 @@ public class Admin extends User{
             for (String key: inActive.keySet()){
                 count++;
                 if (inActive.get(key) instanceof Customer){
-                    System.out.println(count+ " Customer : " + key );
+                    System.out.println(count+ ": Customer : " + key );
                 }else if (inActive.get(key) instanceof Driver){
                     System.out.println( count + ": Driver : " + key );
                 }
@@ -64,7 +68,7 @@ public class Admin extends User{
             for (String key: users.keySet()){
                 count++;
                 if (users.get(key) instanceof Customer){
-                    System.out.println(count+ " Customer : " + key );
+                    System.out.println(count+ ": Customer : " + key );
                 } else if (users.get(key) instanceof Driver){
                     System.out.println( count + ": Driver : " + key );
                 } else if (users.get(key) instanceof Admin){
