@@ -106,7 +106,7 @@ public class Admin extends User{
     @Override
     public void displayMenu() {
         Admin admin = this;
-        int choice= 69;
+        int choice= 10;
         Scanner in = new Scanner(System.in);
         while (choice!=0){
             System.out.println("Welcome " + this.getUsername() + " there is your menu \n" +

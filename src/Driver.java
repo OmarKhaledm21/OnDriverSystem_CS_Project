@@ -14,6 +14,8 @@ public class Driver extends User{
         this.notificationList = new ArrayList<>();
         this.ride = null;
         this.ridesHistory = new ArrayList<>();
+        nationalID = "";
+        licenseNumber = "";
     }
 
     public Driver(String username,String password,String email,String mobileNumber,String nationalID,String licenseNumber){
@@ -120,19 +122,25 @@ public class Driver extends User{
                 Scanner input = new Scanner(System.in);
                 System.out.println("Please enter ride number \nEnter -1 to exit");
                 notificationIndex = input.nextInt();
-                if (notificationIndex == -1)
+                if (notificationIndex == -1) {
                     continue;
+                }
                 if (notificationIndex <= notificationList.size()) {
                     System.out.println("1- Offer Price 2- Reject Ride");
                     choice = input.nextInt();
                     if (choice == 1) {
                         offerPrice(notificationList.get(notificationIndex - 1).getRide());
+                        notificationList.remove(notificationIndex - 1);
+                    } else if (choice == 2){
+                        notificationList.remove(notificationIndex - 1);
+                    }else{
+                        System.out.println("Invalid input, returning to menu!");
                     }
-                    notificationList.remove(notificationIndex - 1);
                 }
             }
         }
     }
+
 
     public void addFavouriteArea(){
         Scanner input = new Scanner(System.in);
@@ -189,7 +197,7 @@ public class Driver extends User{
                     break;
                 default:
                     System.out.println("Invalid choice");
-                    continue;
+                    break;
             }
         }
     }

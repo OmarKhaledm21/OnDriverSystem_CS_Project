@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.*;
 
 public class OnDriverSystem {
@@ -14,6 +15,12 @@ public class OnDriverSystem {
         areaList = new ArrayList<>();
         currentUser = null;
 
+        this.userList.put("d1", new Driver("d1", "d1", "d1", "d1","10","11"));
+        this.userList.put("d2", new Driver("d2", "d2", "d2", "d2","11","14"));
+        this.userList.put("d3", new Driver("d3", "d3", "d3", "d3","22","177"));
+
+        this.userList.put("u1", new Customer("u1", "u1", "u1", "u1"));
+        this.userList.put("u2", new Customer("u2", "u2", "u2", "u2"));
         this.userList.put("admin",new Admin("admin","admin","admin","admin"));
     }
 
@@ -64,6 +71,7 @@ public class OnDriverSystem {
                     System.out.println("Wrong password, please retype your password!");
                     password = user_input.next();
                 }
+                this.currentUser = user;
                 System.out.println("Logged in!");
             }
         }else{
@@ -75,7 +83,19 @@ public class OnDriverSystem {
     public void register(){
         Scanner user_input = new Scanner(System.in);
         System.out.println("Do you want to register as 1- Customer , 2- Driver");
-        int choice = user_input.nextInt();
+        int choice=0;
+        while (true) {
+            try {
+                choice = user_input.nextInt();
+
+                break;
+            } catch (Exception e) {
+                System.out.println("Invalid choice");
+                user_input.nextLine();
+            }
+            System.out.println("Do you want to register as 1- Customer , 2- Driver");
+        }
+
         User user;
         System.out.println("Enter Username, Mobile Number, Email and Password Respectively: ");
         String userName,mobileNumber,email,password;

@@ -1,4 +1,4 @@
-public abstract class User implements IMenu{
+public abstract class User {
     private String username;
     private String password;
     private String email;
@@ -51,4 +51,6 @@ public abstract class User implements IMenu{
     public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
     }
+
+    public abstract void displayMenu();
 }
