@@ -15,12 +15,6 @@ public class OnDriverSystem {
         areaList = new ArrayList<>();
         currentUser = null;
 
-        this.userList.put("d1", new Driver("d1", "d1", "d1", "d1","10","11"));
-        this.userList.put("d2", new Driver("d2", "d2", "d2", "d2","11","14"));
-        this.userList.put("d3", new Driver("d3", "d3", "d3", "d3","22","177"));
-
-        this.userList.put("u1", new Customer("u1", "u1", "u1", "u1"));
-        this.userList.put("u2", new Customer("u2", "u2", "u2", "u2"));
         this.userList.put("admin",new Admin("admin","admin","admin","admin"));
     }
 
