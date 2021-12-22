@@ -8,13 +8,14 @@ public class OnDriverSystem {
     private Hashtable<String,User> inActiveUsers;
     private ArrayList<Area> areaList;
     private User currentUser;
+    private static DB_Helper db;
 
     private OnDriverSystem(){
         userList = new Hashtable<String,User>();
         inActiveUsers = new Hashtable<String,User>();
         areaList = new ArrayList<>();
         currentUser = null;
-
+        db = new DB_Helper();
         this.userList.put("admin",new Admin("admin","admin","admin","admin"));
     }
 
@@ -45,7 +46,7 @@ public class OnDriverSystem {
         this.areaList = areaList;
     }
 
-
+    //TODO
     public User login(){
         this.currentUser = null;
         Scanner user_input = new Scanner(System.in);
@@ -103,17 +104,19 @@ public class OnDriverSystem {
             userName = user_input.next();
         }
 
+        // TODO TEST OMAR ATEF
         if(choice == 2) {
             System.out.println("Enter National ID, License Number: ");
             String nationalID = user_input.next();
             String licenseNumber = user_input.next();
             user = new Driver(userName,password,email,mobileNumber,nationalID,licenseNumber);
             this.inActiveUsers.put(userName, (Driver) user);
+            this.db.addUser(user);
         }else{
             user = new Customer(userName,password,email,mobileNumber);
             this.userList.put(userName,user);
+            this.db.addUser(user);
         }
-
 
         System.out.println("User registered successfully");
     }

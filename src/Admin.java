@@ -19,6 +19,7 @@ public class Admin extends User{
             } else if (clonedUsers.get(key) instanceof Customer) {
                 System.out.println("Customer : " + key);
             }
+            //TODO//TODO//TODO//TODO//TODO//TODO//TODO CHANGE STATUS FOR DB
             System.out.println("What you want to do?\n1- to Verify 2- to Delete (anything else to skip)");
             choice = in.nextInt();
             switch (choice){

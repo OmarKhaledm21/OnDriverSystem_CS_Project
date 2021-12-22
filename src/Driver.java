@@ -16,6 +16,7 @@ public class Driver extends User{
         this.ridesHistory = new ArrayList<>();
         nationalID = "";
         licenseNumber = "";
+        this.status = 0;
     }
 
     public Driver(String username,String password,String email,String mobileNumber,String nationalID,String licenseNumber){
@@ -26,6 +27,7 @@ public class Driver extends User{
         this.notificationList = new ArrayList<>();
         this.ride = null;
         this.ridesHistory = new ArrayList<>();
+        this.status=0;
     }
 
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////

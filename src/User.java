@@ -1,14 +1,19 @@
+import java.sql.Date;
+
 public abstract class User {
     private String username;
     private String password;
+    private Date birthDay;
     private String email;
     private String mobileNumber;
+    protected int status;
 
     public User(){
         this.username = null;
         this.password = null;
         this.email = null;
         this.mobileNumber = null;
+        this.status=0;
     }
 
     public User(String username,String password,String email,String mobileNumber){
@@ -16,6 +21,7 @@ public abstract class User {
         this.password = password;
         this.email = email;
         this.mobileNumber = mobileNumber;
+        this.birthDay = null;
     }
 
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
@@ -50,6 +56,22 @@ public abstract class User {
 
     public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
+    }
+
+    public Date getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(Date birthDay) {
+        this.birthDay = birthDay;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public abstract void displayMenu();
