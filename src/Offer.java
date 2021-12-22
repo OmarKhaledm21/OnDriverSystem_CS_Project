@@ -1,18 +1,18 @@
 public class Offer {
-    private Driver driver;
+    private Captain captain;
     private double offeredPrice;
 
-    public Offer(Driver driver,double offeredPrice){
-        this.driver = driver;
+    public Offer(Captain captain, double offeredPrice){
+        this.captain = captain;
         this.offeredPrice = offeredPrice;
     }
 
-    public Driver getDriver() {
-        return driver;
+    public Captain getDriver() {
+        return captain;
     }
 
-    public void setDriver(Driver driver) {
-        this.driver = driver;
+    public void setDriver(Captain captain) {
+        this.captain = captain;
     }
 
     public double getOfferedPrice() {
@@ -26,6 +26,6 @@ public class Offer {
     @Override
     public String toString() {
 
-        return "Driver name: " + this.driver.getUsername() + "\nOffer : "+ this.offeredPrice;
+        return "Driver name: " + this.captain.getUsername() + "\nOffer : "+ this.offeredPrice;
     }
 }

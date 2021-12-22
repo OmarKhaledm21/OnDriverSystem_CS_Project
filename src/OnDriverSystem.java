@@ -1,7 +1,6 @@
-import java.io.IOException;
 import java.util.*;
 
-public class OnDriverSystem {
+public class OnDriverSystem implements IDataBase{
     private static OnDriverSystem onDriverSystem;
 
     private Hashtable<String,User> userList;
@@ -17,6 +16,7 @@ public class OnDriverSystem {
         currentUser = null;
         db = new DB_Helper();
         this.userList.put("admin",new Admin("admin","admin","admin","admin"));
+        populateLists();
     }
 
     public static OnDriverSystem getSystem(){
@@ -44,6 +44,17 @@ public class OnDriverSystem {
 
     public void setAreaList(ArrayList<Area> areaList) {
         this.areaList = areaList;
+    }
+
+    public void populateLists(){
+        ArrayList<User> db_instance = this.db.selectAll();
+        for (User user: db_instance) {
+            if(user.getStatus()==0){
+                this.inActiveUsers.put(user.getUsername(),user);
+            }else{
+                this.userList.put(user.getUsername(),user);
+            }
+        }
     }
 
     //TODO
@@ -109,11 +120,11 @@ public class OnDriverSystem {
             System.out.println("Enter National ID, License Number: ");
             String nationalID = user_input.next();
             String licenseNumber = user_input.next();
-            user = new Driver(userName,password,email,mobileNumber,nationalID,licenseNumber);
-            this.inActiveUsers.put(userName, (Driver) user);
+            user = new Captain(userName,password,email,mobileNumber,nationalID,licenseNumber,0);
+            this.inActiveUsers.put(userName, (Captain) user);
             this.db.addUser(user);
         }else{
-            user = new Customer(userName,password,email,mobileNumber);
+            user = new Customer(userName,password,email,mobileNumber,1);
             this.userList.put(userName,user);
             this.db.addUser(user);
         }
@@ -125,25 +136,51 @@ public class OnDriverSystem {
     public void newRideNotify(Ride ride){
         for (String user_name : userList.keySet()){
             User current = userList.get(user_name);
-            if(current instanceof Driver){
-                Driver driver = (Driver) current;
-                if(driver.getRide()==null){
-                    if(ride.getSource().isFavouriteDriver(driver)){
-                        driver.notify(new FavAreaRideNotification(ride));
+            if(current instanceof Captain){
+                Captain captain = (Captain) current;
+                if(captain.getRide()==null){
+                    if(ride.getSource().isFavouriteDriver(captain)){
+                        captain.notify(new FavAreaRideNotification(ride));
                     }else{
-                        driver.notify(new NewRideNotification(ride));
+                        captain.notify(new NewRideNotification(ride));
                     }
                 }
             }
         }
     }
 
-    public static DB_Helper getDb() {
-        return db;
-    }
-
     public void addArea(Area area){
         areaList.add(area);
+    }
+
+    @Override
+    public boolean addUser(User user) {
+        return db.addUser(user);
+    }
+
+    @Override
+    public boolean activateUser(User user) {
+        return db.activateUser(user);
+    }
+
+    @Override
+    public boolean deleteUser(User user) {
+        return db.deleteUser(user);
+    }
+
+    @Override
+    public User search(String username) {
+        return db.search(username);
+    }
+
+    @Override
+    public boolean userExist(User user) {
+        return db.userExist(user);
+    }
+
+    @Override
+    public boolean suspendUser(User user) {
+        return db.suspendUser(user);
     }
 }
 

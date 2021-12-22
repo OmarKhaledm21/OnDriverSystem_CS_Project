@@ -7,7 +7,7 @@ public class Ride {
     private RideStatus rideStatus;
     private int rating;
     private double price;
-    private Driver driver;
+    private Captain captain;
     private ArrayList<Offer> priceOffers;
 
     public Ride(Area source, Area destination) {
@@ -15,7 +15,7 @@ public class Ride {
         this.destination = destination;
 
         this.rideStatus = RideStatus.PENDING;
-        this.driver = null;
+        this.captain = null;
 
         this.priceOffers = new ArrayList<>();
     }
@@ -33,12 +33,12 @@ public class Ride {
         return price;
     }
 
-    public Driver getDriver() {
-        return driver;
+    public Captain getDriver() {
+        return captain;
     }
 
-    public void setDriver(Driver driver) {
-        this.driver = driver;
+    public void setDriver(Captain captain) {
+        this.captain = captain;
     }
 
     public void setRideStatus(RideStatus rideStatus) {
@@ -99,7 +99,7 @@ public class Ride {
     }
 
     public void acceptOffer(Offer offer) {
-        this.driver = offer.getDriver();
+        this.captain = offer.getDriver();
         this.price = offer.getOfferedPrice();
         this.priceOffers = null;
         this.rideStatus=RideStatus.IN_PROGRESS;

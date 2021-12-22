@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Driver extends User{
+public class Captain extends User{
     private String nationalID;
     private String licenseNumber;
     private double averageRating;
@@ -9,7 +9,7 @@ public class Driver extends User{
     private Ride ride;
     private ArrayList<Ride> ridesHistory;
 
-    public Driver(){
+    public Captain(){
         this.averageRating = 0.0;
         this.notificationList = new ArrayList<>();
         this.ride = null;
@@ -19,15 +19,14 @@ public class Driver extends User{
         this.status = 0;
     }
 
-    public Driver(String username,String password,String email,String mobileNumber,String nationalID,String licenseNumber){
-        super(username,password,email,mobileNumber);
+    public Captain(String username, String password, String email, String mobileNumber, String nationalID, String licenseNumber,int status){
+        super(username,password,email,mobileNumber,status);
         this.nationalID = nationalID;
         this.licenseNumber = licenseNumber;
         this.averageRating =0.0;
         this.notificationList = new ArrayList<>();
         this.ride = null;
         this.ridesHistory = new ArrayList<>();
-        this.status=0;
     }
 
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////

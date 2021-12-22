@@ -16,12 +16,13 @@ public abstract class User {
         this.status=0;
     }
 
-    public User(String username,String password,String email,String mobileNumber){
+    public User(String username,String password,String email,String mobileNumber,int status){
         this.username = username;
         this.password = password;
         this.email = email;
         this.mobileNumber = mobileNumber;
         this.birthDay = null;
+        this.status = status;
     }
 
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////

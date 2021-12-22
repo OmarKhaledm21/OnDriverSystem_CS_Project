@@ -4,8 +4,8 @@ import java.util.Scanner;
 public class Customer extends User{
     private Ride ride;
 
-    public Customer(String username,String password,String email,String mobileNumber){
-        super(username,password,email,mobileNumber);
+    public Customer(String username,String password,String email,String mobileNumber,int status){
+        super(username,password,email,mobileNumber,status);
         this.status=1;
         ride = null;
     }
