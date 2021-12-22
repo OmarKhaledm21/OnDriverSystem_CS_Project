@@ -80,9 +80,10 @@ public class Admin extends User{
         }
     }
 
+    //TODO
     public void suspendUser() {
         OnDriverSystem system = OnDriverSystem.getSystem();
-
+        DB_Helper db_helper = OnDriverSystem.getDb();
         Hashtable<String, User> userHashtable = system.getUserList();
         Hashtable<String, User> inActive = system.getInActiveUsers();
         boolean loop = true;

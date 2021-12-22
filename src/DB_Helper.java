@@ -97,6 +97,11 @@ public class DB_Helper {
         return true;
     }
 
+    //TODO PETER
+    public boolean userExist(){
+        return true;
+    }
+
     public static void main(String[] args) {
         DB_Helper db_helper = new DB_Helper();
     }

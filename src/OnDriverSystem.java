@@ -121,6 +121,7 @@ public class OnDriverSystem {
         System.out.println("User registered successfully");
     }
 
+
     public void newRideNotify(Ride ride){
         for (String user_name : userList.keySet()){
             User current = userList.get(user_name);
@@ -137,7 +138,13 @@ public class OnDriverSystem {
         }
     }
 
+    public static DB_Helper getDb() {
+        return db;
+    }
+
     public void addArea(Area area){
         areaList.add(area);
     }
 }
+
+
