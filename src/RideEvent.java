@@ -4,4 +4,8 @@ public abstract class RideEvent {
     RideEvent(Ride ride){
         this.ride=ride;
     }
+
+    public Ride getRide(){
+        return this.ride;
+    }
 }

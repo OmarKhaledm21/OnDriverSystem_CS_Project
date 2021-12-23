@@ -11,6 +11,8 @@ public class Ride {
     private ArrayList<Offer> priceOffers;
     private Customer customer;
     private ArrayList<RideEvent> rideEvents;
+    private static int ride_id=0;
+    private int rideID;
 
     public Ride(Customer customer, Area source, Area destination) {
         rideEvents = new ArrayList<>();
@@ -23,6 +25,8 @@ public class Ride {
         this.captain = null;
 
         this.priceOffers = new ArrayList<>();
+        Ride.ride_id++;
+        this.rideID=ride_id;
     }
 
 
@@ -78,7 +82,14 @@ public class Ride {
 
     public void addOffer(Offer offer) {
         this.priceOffers.add(offer);
+    }
 
+    public int getID() {
+        return this.rideID;
+    }
+
+    public void setID(int rideID) {
+        this.rideID = rideID;
     }
 
     public RideStatus getRideStatus() {
@@ -127,6 +138,9 @@ public class Ride {
     }
 
     public void addToEventLog(RideEvent rideEvent) {
+        OnDriverSystem system = OnDriverSystem.getSystem();
+        system.saveEvent(rideEvent);
+        // TODO TODO TODO TODO TODO TODO TODO TODO TODO
         rideEvents.add(rideEvent);
     }
 }

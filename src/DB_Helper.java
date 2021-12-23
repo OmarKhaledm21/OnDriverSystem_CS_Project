@@ -34,17 +34,45 @@ public class DB_Helper implements IDataBase{
                 "Status INT DEFAULT 0" +
                 ");";
 
-        String createDriverTable = "CREATE TABLE Driver (" +
+        String createDriverTable = "CREATE TABLE Drivers (" +
                 "UserName TEXT PRIMARY KEY," +
                 "NationalID TEXT NOT NULL," +
                 "LicenseNumber TEXT NOT NULL," +
                 "AverageRating REAL DEFAULT 0.0," +
                 "FOREIGN KEY (UserName) REFERENCES Users (UserName)" +
                 ");";
+
         String createCustomerTable = "CREATE TABLE Customers (" +
                 "UserName TEXT PRIMARY KEY," +
                 "FOREIGN KEY (UserName) REFERENCES Users (UserName)" +
                 ");";
+
+        String areaTable="CREATE TABLE Area(" +
+                "Location TEXT PRIMARY KEY NOT NULL" +
+                ");";
+
+        String createRidesTable = "CREATE TABLE Rides(" +
+                "RideID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "Source TEXT NOT NULL," +
+                "Destination TEXT NOT NULL," +
+                "RideStatus TEXT NOT NULL," +
+                "Price REAL," +
+                "Customer_Username TEXT NOT NULL," +
+                "Captain_Username TEXT NOT NULL," +
+                "Rating INT DEFAULT 0," +
+                "FOREIGN KEY (Customer_Username) REFERENCES Users (UserName)," +
+                "FOREIGN KEY (Captain_Username) REFERENCES Users (UserName)" +
+                ");";
+
+
+        String createLogsTable = "CREATE TABLE Logs (" +
+                "EventName TEXT NOT NULL," +
+                "EventTime TEXT," +
+                "Log TEXT NOT NULL," +
+                "RideID INT NOT NULL," +
+                "FOREIGN KEY (RideID) REFERENCES Rides (RideID)" +
+                ");";
+
 
         String createAdminTable = "CREATE TABLE Admin (" +
                 "UserName TEXT PRIMARY KEY," +
@@ -63,6 +91,9 @@ public class DB_Helper implements IDataBase{
             statement.execute(createAdminTable);
             statement.execute(insertAdmin);
             statement.execute(addAdmin);
+            statement.execute(createRidesTable);
+            statement.execute(createLogsTable);
+            statement.execute(areaTable);
         } catch (SQLException yeet) {
             yeet.printStackTrace();
         }
@@ -166,7 +197,7 @@ public class DB_Helper implements IDataBase{
                 String mobileNumber = userSet.getString("MobileNumber");
 
                 if(userType.equals("Captain")){
-                    String driverQueryString = "SELECT * FROM Driver WHERE UserName = ?";
+                    String driverQueryString = "SELECT * FROM Drivers WHERE UserName = ?";
                     PreparedStatement driversQuery = connection.prepareStatement(driverQueryString);
 
                     driversQuery.setString(1, username);
@@ -191,7 +222,7 @@ public class DB_Helper implements IDataBase{
     }
 
     public boolean addToDriverTable(Captain driver) {
-        String query = "INSERT INTO Driver(UserName,NationalId,LicenseNumber,AverageRating)" +
+        String query = "INSERT INTO Drivers(UserName,NationalId,LicenseNumber,AverageRating)" +
                 "VALUES(?,?,?,?);";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -243,6 +274,80 @@ public class DB_Helper implements IDataBase{
         }else{
             return false;
         }
+    }
+
+    @Override
+    public void addRide(Ride ride) {
+        String addRideQuery = "INSERT INTO Rides (Source,Destination,RideStatus,Price,Customer_Username,Captain_Username,Rating)" +
+                "VALUES(?,?,?,?,?,?,?);";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(addRideQuery);
+            preparedStatement.setString(1,ride.getSource().getLocation());
+            preparedStatement.setString(2,ride.getDestination().getLocation());
+            preparedStatement.setString(3,ride.getRideStatus().toString());
+            preparedStatement.setDouble(4,ride.getPrice());
+            preparedStatement.setString(5,ride.getCustomer().getUsername());
+            preparedStatement.setString(6,ride.getDriver().getUsername());
+            preparedStatement.setInt(7,ride.getRating());
+            preparedStatement.executeUpdate();
+        }catch (Exception e){}
+
+    }
+
+    @Override
+    public void changeRideStatus(Ride ride) {
+        String updateStatus = "UPDATE Rides SET RideStatus ? WHERE Customer_Username = ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(updateStatus);
+            preparedStatement.setString(1,ride.getRideStatus().toString());
+            preparedStatement.setString(2,ride.getCustomer().getUsername());
+            preparedStatement.executeUpdate();
+        }catch (Exception e){}
+    }
+
+    @Override
+    public void addArea(Area area) {
+        String addAreaQuery = "INSERT INTO Area VALUES(?)";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(addAreaQuery);
+            preparedStatement.setString(1,area.getLocation());
+            preparedStatement.executeUpdate();
+        }catch (Exception e){}
+    }
+
+    @Override
+    public String readLogs() {
+        return null;
+    }
+
+    @Override
+    public void saveEvent(RideEvent log) {
+        Ride ride = log.getRide();
+
+        String logQuery = "INSERT INTO Logs (EventName,Log,RideID) VALUES(?,?,?);";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(logQuery);
+            preparedStatement.setString(1,log.getClass().getName());
+            preparedStatement.setString(2,log.toString());
+            preparedStatement.setInt(3,ride.getID());
+            preparedStatement.executeUpdate();
+        }catch (Exception e){}
+    }
+
+    //TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+    @Override
+    public Ride searchRide(Ride ride) {
+        Ride res = null;
+        String selectRideQuery="SELECT * FROM Rides WHERE RideID = ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(selectRideQuery);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){}
+
+        }catch (Exception e){}
+
+
+        return res;
     }
 
     public static void main(String[] args) {

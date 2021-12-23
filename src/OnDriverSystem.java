@@ -182,6 +182,30 @@ public class OnDriverSystem implements IDataBase{
     public boolean suspendUser(User user) {
         return db.suspendUser(user);
     }
+
+    @Override
+    public String readLogs() {
+        return db.readLogs();
+    }
+
+    public void saveEvent(RideEvent log) {
+        db.saveEvent(log);
+    }
+
+    @Override
+    public void addRide(Ride ride) {
+        db.addRide(ride);
+    }
+
+    @Override
+    public void changeRideStatus(Ride ride) {
+        db.changeRideStatus(ride);
+    }
+
+    @Override
+    public Ride searchRide(Ride ride) {
+        return db.searchRide(ride);
+    }
 }
 
 
