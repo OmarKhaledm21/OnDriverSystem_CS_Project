@@ -6,7 +6,7 @@ public class Customer extends User{
 
     public Customer(String username,String password,String email,String mobileNumber,int status){
         super(username,password,email,mobileNumber,status);
-        this.status=1;
+        this.status=status;
         ride = null;
     }
 
@@ -27,7 +27,7 @@ public class Customer extends User{
             }
         }
 
-        this.ride = new Ride(source,destination);
+        this.ride = new Ride(this,source,destination);
 
         system.newRideNotify(this.ride);
         System.out.println("Ride is requested, waiting for offers from drivers!");
@@ -69,6 +69,14 @@ public class Customer extends User{
             if(choice >= 0 && choice <= offers.size()){
                 Offer acceptedOffer = offers.get(choice - 1);
                 acceptedOffer.getDriver().notify(new CustomerAcceptedRideNotification(this.ride));
+                CustomerAcceptedEvent customerAcceptedEvent = new CustomerAcceptedEvent(this.ride);
+                this.ride.addToEventLog(customerAcceptedEvent);
+
+                //TODO TODO TODO TODO TODO 3SHAN LESA FAKEEEEE ZY EL EX
+                DriverArrivedEvent driverArrivedEvent = new DriverArrivedEvent(this.ride);
+                this.ride.addToEventLog(driverArrivedEvent);
+                //TODO TODO TODO TODO TODO ELY FO2 DA FAKEE ZY EL EX
+
                 this.ride.setRideStatus(RideStatus.IN_PROGRESS);
             }else if(choice == -1){
                 System.out.println("Back to menu!");
@@ -90,6 +98,8 @@ public class Customer extends User{
                 System.out.println("Rate the ride: ");
                 rateRide();
                 this.ride.getDriver().notify(new FinishedRideNotification(this.ride));
+                RideEndedEvent rideEndedEvent = new RideEndedEvent(this.ride);
+                this.ride.addToEventLog(rideEndedEvent);
             }
         }else{
             System.out.println("You are not in a ride currently!");

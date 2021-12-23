@@ -9,8 +9,13 @@ public class Ride {
     private double price;
     private Captain captain;
     private ArrayList<Offer> priceOffers;
+    private Customer customer;
+    private ArrayList<RideEvent> rideEvents;
 
-    public Ride(Area source, Area destination) {
+    public Ride(Customer customer, Area source, Area destination) {
+        rideEvents = new ArrayList<>();
+
+        this.customer = customer;
         this.source = source;
         this.destination = destination;
 
@@ -20,7 +25,17 @@ public class Ride {
         this.priceOffers = new ArrayList<>();
     }
 
+
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
     public Area getSource() {
         return source;
     }
@@ -63,9 +78,10 @@ public class Ride {
 
     public void addOffer(Offer offer) {
         this.priceOffers.add(offer);
+
     }
 
-    public RideStatus getRideStatus(){
+    public RideStatus getRideStatus() {
         return this.rideStatus;
     }
 
@@ -75,7 +91,7 @@ public class Ride {
         }
         Scanner in = new Scanner(System.in);
         int selectedOffer = -1;
-        while(true) {
+        while (true) {
             System.out.println("Please choose an offer number\nOr enter -1 to exit");
             selectedOffer = in.nextInt();
 
@@ -102,12 +118,16 @@ public class Ride {
         this.captain = offer.getDriver();
         this.price = offer.getOfferedPrice();
         this.priceOffers = null;
-        this.rideStatus=RideStatus.IN_PROGRESS;
+        this.rideStatus = RideStatus.IN_PROGRESS;
     }
 
     @Override
     public String toString() {
         return "Source Area: " + this.source.getLocation() + "\nDestination Area: " + this.destination.getLocation() + "\nStatus: " + this.rideStatus.toString();
+    }
+
+    public void addToEventLog(RideEvent rideEvent) {
+        rideEvents.add(rideEvent);
     }
 }
 

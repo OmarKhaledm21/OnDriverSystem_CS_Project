@@ -86,6 +86,8 @@ public class Captain extends User{
         double price = input.nextDouble();
         Offer offeredPrice = new Offer(this, price);
         ride.addOffer(offeredPrice);
+        OfferPriceEvent offerPriceEvent = new OfferPriceEvent(ride,offeredPrice);
+        ride.addToEventLog(offerPriceEvent);
     }
 
     public void notify(Notification notification){
