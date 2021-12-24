@@ -101,82 +101,79 @@ public class DB_Helper implements IDataBase{
 
     public ArrayList<User> selectAll(){
         ArrayList<User> db_List = new ArrayList<>();
-        String selection = "SELECT UserName FROM Users;";
+        String selectionQuery = "SELECT UserName FROM Users;";
         try {
-            ResultSet resultSet = statement.executeQuery(selection);
+            ResultSet resultSet = statement.executeQuery(selectionQuery);
             while (resultSet.next()){
                 String userName = resultSet.getString("UserName");
                 User user = search(userName);
-                if((user!=null)){
+                if((user != null)){
                     db_List.add(user);
                 }
             }
-        }catch (Exception e){}
-
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return db_List;
     }
 
     public boolean addUser(User user){
-        String addQuery = "INSERT INTO Users(UserName, PassWord, BirthDate, Email, MobileNumber, Type, Status) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement preparedStatement = null;
+        String addQuery = "INSERT INTO Users(UserName, PassWord, BirthDate, Email, MobileNumber, Type, Status) VALUES (?, ?, ?, ?, ?, ?, ?);";
         try {
             String userType = user.getClass().getName();
+            PreparedStatement preparedStatement = connection.prepareStatement(addQuery);
+            preparedStatement.setString(1, user.getUsername());
+            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setDate(3, user.getBirthDay());
+            preparedStatement.setString(4, user.getEmail());
+            preparedStatement.setString(5, user.getMobileNumber());
+            preparedStatement.setString(6, userType);
+            preparedStatement.setInt(7, user.getStatus());
 
-            preparedStatement = connection.prepareStatement(addQuery);
-            preparedStatement.setString(1,user.getUsername());
-            preparedStatement.setString(2,user.getPassword());
-            preparedStatement.setDate(3,user.getBirthDay());
-            preparedStatement.setString(4,user.getEmail());
-            preparedStatement.setString(5,user.getMobileNumber());
-            preparedStatement.setString(6,userType);
-            preparedStatement.setInt(7,user.getStatus());
-
-            if (user instanceof Captain) {
-                //TODO ADD DETAILS TO DRIVER TABLE (OMAR ATEF)
+            if (user instanceof Captain)
                 addToDriverTable((Captain) user);
-            } else {
-                //TODO ADD DETAULS FOR CUSTOMER (OMAR ATEF)
+            else
                 addToCustomersTable(user);
-            }
 
             preparedStatement.executeUpdate();
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
+
         return true;
     }
 
     public boolean activateUser(User user){
         if(userExist(user)) {
-            String activatedQuery = "UPDATE Users SET Status = 1 WHERE UserName = ? ;";
+            String activationQuery = "UPDATE Users SET Status = 1 WHERE UserName = ? ;";
             try {
-                PreparedStatement preparedStatement = connection.prepareStatement(activatedQuery);
+                PreparedStatement preparedStatement = connection.prepareStatement(activationQuery);
                 preparedStatement.setString(1, user.getUsername());
                 preparedStatement.executeUpdate();
             } catch (Exception e) {
+                e.printStackTrace();
                 return false;
             }
             return true;
-        }else{
+        }else
             return false;
-        }
     }
 
     public boolean deleteUser(User user){
         if(userExist(user)) {
-            String deleteUserQuery = "DELETE FROM Users WHERE UserName = ? ;";
+            String deleteQuery = "DELETE FROM Users WHERE UserName = ? ;";
             try {
-                PreparedStatement preparedStatement = connection.prepareStatement(deleteUserQuery);
+                PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery);
                 preparedStatement.setString(1, user.getUsername());
                 preparedStatement.executeUpdate();
             } catch (Exception e) {
+                e.printStackTrace();
                 return false;
             }
             return true;
-        }else {
+        }else
             return false;
-        }
     }
 
     public User search(String username){

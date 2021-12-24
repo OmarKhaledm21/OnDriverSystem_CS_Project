@@ -57,31 +57,14 @@ public class OnDriverSystem implements IDataBase{
         }
     }
 
-    //TODO
-    public User login(){
+    public User login(String username, String password) {
         this.currentUser = null;
-        Scanner user_input = new Scanner(System.in);
-        System.out.println("Enter Username and Password Respectively: ");
-        String userName,password;
-        userName = user_input.next();
-        password = user_input.next();
+        User user = db.search(username);
 
-        User user = this.userList.get(userName);
-
-        if(user != null){
-            if(user.getPassword().equals(password)){
+        if (user != null) {
+            if (user.getPassword().equals(password)) {
                 this.currentUser = user;
-                System.out.println("Logged in!");
-            }else{
-                while (!user.getPassword().equals(password)){
-                    System.out.println("Wrong password, please retype your password!");
-                    password = user_input.next();
-                }
-                this.currentUser = user;
-                System.out.println("Logged in!");
             }
-        }else{
-            System.out.println("User is not registered in the system!");
         }
         return this.currentUser;
     }

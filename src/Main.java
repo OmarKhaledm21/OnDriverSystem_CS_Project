@@ -15,9 +15,17 @@ public class Main {
                     system.register();
                     break;
                 case "2":
-                    User currentUser = system.login();
-                    if(currentUser!=null){
-                        currentUser.displayMenu();
+                    User currentUser = null;
+                    while (currentUser == null){
+                        System.out.println("Enter Username and Password Respectively: ");
+                        String username = input.next();
+                        String password = input.next();
+                        currentUser = system.login(username, password);
+                        if(currentUser != null){
+                            System.out.println("Logged in!");
+                            currentUser.displayMenu();
+                        }else
+                            System.out.println("Invalid login details, Please try again");
                     }
                     break;
                 default:
