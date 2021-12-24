@@ -7,7 +7,6 @@ public class RideEndedEvent extends RideEvent {
 
     @Override
     public String toString() {
-        return "Ride Ended EVENT!!!!! Driver: " + ride.getDriver().toString() + "Completed Client's " + ride.getCustomer().toString() + " ride :D";
-
+        return "Ride Ended EVENT!!!!! Driver: " + ride.getDriver().toString() + " Completed Client's " + ride.getCustomer().toString() + " ride.";
     }
 }

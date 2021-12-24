@@ -10,6 +10,14 @@ public class Customer extends User{
         ride = null;
     }
 
+    public Ride getRide() {
+        return ride;
+    }
+
+    public void setRide(Ride ride) {
+        this.ride = ride;
+    }
+
     @Override
     public String toString() {
         return "Customer name: " + this.getUsername() + " Mobile number: " + this.getMobileNumber() + " E-mail: " + this.getEmail() + " Status: " + this.getStatus();

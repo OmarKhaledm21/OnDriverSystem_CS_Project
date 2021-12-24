@@ -174,6 +174,7 @@ public class Captain extends User{
         }
     }
 
+
     public void RideStatus(){
         System.out.println(this.ride.getRideStatus());
     }

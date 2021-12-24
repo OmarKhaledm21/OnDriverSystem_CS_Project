@@ -169,6 +169,8 @@ public class Admin extends User{
         Area destination = new Area("a2");
         Ride ride =  Ride.createRide(customer, source, destination);
         ride.setDriver(captain);
+        captain.setRide(ride);
+        customer.setRide(ride);
         system.addUser(customer);
         system.addUser(captain);
         system.addAreaDB(source);
@@ -182,7 +184,7 @@ public class Admin extends User{
         system.saveEvent(rideEvent);
         system.saveEvent(rideEvent1);
 
-        system.getEvent(ride);
+        //system.getEvent(ride);
 
         Admin admin = new Admin("a","a","a","a");
         admin.listRideLogs(ride.getID());

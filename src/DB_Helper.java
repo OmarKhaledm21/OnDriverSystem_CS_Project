@@ -336,7 +336,9 @@ public class DB_Helper implements IDataBase{
                 } else if (resultSet.getString("EventName").equals("RideEndedEvent")) {
                     rideEvent = new RideEndedEvent(ride);
                 }
-                System.out.println(rideEvent.toString());
+                if (rideEvent != null) {
+                    System.out.println(rideEvent.toString());
+                }
             }
 
         }catch (Exception e){
