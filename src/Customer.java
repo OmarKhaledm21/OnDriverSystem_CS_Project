@@ -10,6 +10,11 @@ public class Customer extends User{
         ride = null;
     }
 
+    @Override
+    public String toString() {
+        return "Customer name: " + this.getUsername() + " Mobile number: " + this.getMobileNumber() + " E-mail: " + this.getEmail() + " Status: " + this.getStatus();
+    }
+
     public void requestRide(){
         OnDriverSystem system = OnDriverSystem.getSystem();
         ArrayList<Area> areas = system.getAreaList();

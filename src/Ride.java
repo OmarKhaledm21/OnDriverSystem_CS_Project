@@ -25,10 +25,13 @@ public class Ride {
         this.captain = null;
 
         this.priceOffers = new ArrayList<>();
-        Ride.ride_id++;
         this.rideID=ride_id;
     }
 
+    public static Ride createRide(Customer customer, Area source, Area destination){
+        Ride.ride_id++;
+        return new Ride(customer, source, destination);
+    }
 
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
 

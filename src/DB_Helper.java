@@ -46,7 +46,7 @@ public class DB_Helper implements IDataBase{
                 "UserName TEXT PRIMARY KEY," +
                 "FOREIGN KEY (UserName) REFERENCES Users (UserName)" +
                 ");";
-
+    //TODO
         String areaTable="CREATE TABLE Area(" +
                 "Location TEXT PRIMARY KEY NOT NULL" +
                 ");";
@@ -290,7 +290,9 @@ public class DB_Helper implements IDataBase{
             preparedStatement.setString(6,ride.getDriver().getUsername());
             preparedStatement.setInt(7,ride.getRating());
             preparedStatement.executeUpdate();
-        }catch (Exception e){}
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -302,7 +304,9 @@ public class DB_Helper implements IDataBase{
             preparedStatement.setString(1,ride.getRideStatus().toString());
             preparedStatement.setString(2,ride.getCustomer().getUsername());
             preparedStatement.executeUpdate();
-        }catch (Exception e){}
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -312,12 +316,36 @@ public class DB_Helper implements IDataBase{
             PreparedStatement preparedStatement = connection.prepareStatement(addAreaQuery);
             preparedStatement.setString(1,area.getLocation());
             preparedStatement.executeUpdate();
-        }catch (Exception e){}
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public String readLogs() {
-        return null;
+    public RideEvent getEvent(Ride ride) {
+        String query = "SELECT * FROM Logs Where RideID = ?";
+        int rideID = ride.getID();
+        RideEvent rideEvent = null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, rideID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                if (resultSet.getString("EventName").equals("CustomerAcceptedEvent")) {
+                    rideEvent = new CustomerAcceptedEvent(ride);
+                } else if (resultSet.getString("EventName").equals("DriverArrivedEvent")) {
+                    rideEvent = new DriverArrivedEvent(ride);
+                } else if (resultSet.getString("EventName").equals("OfferPriceEvent")) {
+                    rideEvent = new OfferPriceEvent(ride, ride.getPriceOffers().get(ride.getPriceOffers().size() - 1));
+                } else if (resultSet.getString("EventName").equals("RideEndedEvent")) {
+                    rideEvent = new RideEndedEvent(ride);
+                }
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return rideEvent;
     }
 
     @Override
@@ -331,27 +359,69 @@ public class DB_Helper implements IDataBase{
             preparedStatement.setString(2,log.toString());
             preparedStatement.setInt(3,ride.getID());
             preparedStatement.executeUpdate();
-        }catch (Exception e){}
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
-    //TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
     @Override
     public Ride searchRide(Ride ride) {
         Ride res = null;
         String selectRideQuery="SELECT * FROM Rides WHERE RideID = ?;";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(selectRideQuery);
+            preparedStatement.setInt(1, ride.getID());
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){}
+            if(resultSet.next()){
+                Customer tempCustomer = (Customer) search(resultSet.getString("Customer_Username"));
+                Captain tempCaptain = (Captain) search(resultSet.getString("Captain_Username"));
+                Area tempSource = searchArea(resultSet.getString("Source"));
+                Area tempDestination = searchArea(resultSet.getString("Destination"));
+                res = new Ride(tempCustomer, tempSource, tempDestination);
+            }
 
-        }catch (Exception e){}
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
 
         return res;
     }
 
+    public Area searchArea(String location){
+        String query = "SELECT * FROM Area WHERE Location = ?";
+        Area area = null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, location);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                area = new Area(resultSet.getString("Location"));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return area;
+    }
+
     public static void main(String[] args) {
         DB_Helper db_helper = new DB_Helper();
+        Customer customer = new Customer("o1", "o1", "o1", "o1", 1);
+        Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1", 1);
+        Area source = new Area("a1");
+        Area destination = new Area("a2");
+        Ride ride =  Ride.createRide(customer, source, destination);
+        ride.setDriver(captain);
+        db_helper.addUser(customer);
+        db_helper.addUser(captain);
+        db_helper.addArea(source);
+        db_helper.addArea(destination);
+        db_helper.addRide(ride);
+        Ride temp = db_helper.searchRide(ride);
+        System.out.println(temp.toString());
+        RideEvent rideEvent = new CustomerAcceptedEvent(ride);
+        db_helper.saveEvent(rideEvent);
+        System.out.println(db_helper.getEvent(ride).toString());
     }
 
 }
