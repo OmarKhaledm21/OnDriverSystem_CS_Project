@@ -9,7 +9,7 @@ public interface IDataBase {
     public void saveEvent(RideEvent log);
     public void addRide(Ride ride);
     public void changeRideStatus(Ride ride);
-    public void addArea(Area area);
+    public void addAreaDB(Area area);
     public Ride searchRide(Ride ride);
     public Ride searchRide(int rideID);
     public Area searchArea(String location);

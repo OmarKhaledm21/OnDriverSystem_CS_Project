@@ -137,6 +137,11 @@ public class OnDriverSystem implements IDataBase{
     }
 
     @Override
+    public void addAreaDB(Area area) {
+        db.addAreaDB(area);
+    }
+
+    @Override
     public boolean addUser(User user) {
         return db.addUser(user);
     }

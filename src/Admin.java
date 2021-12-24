@@ -92,6 +92,13 @@ public class Admin extends User{
         }
     }
 
+    public void listRideLogs(int rideID){
+        Ride ride = OnDriverSystem.getSystem().searchRide(rideID);
+        if(ride!=null){
+            OnDriverSystem.getSystem().getEvent(ride);
+        }
+    }
+
     //TODO
     public void suspendUser() {
         OnDriverSystem system = OnDriverSystem.getSystem();
@@ -120,6 +127,8 @@ public class Admin extends User{
             }
         }
     }
+
+
 
     @Override
     public void displayMenu() {
@@ -150,5 +159,32 @@ public class Admin extends User{
              }
         }
 
+    }
+
+    public static void main(String[] args) {
+        OnDriverSystem system = OnDriverSystem.getSystem();
+        Customer customer = new Customer("o1", "o1", "o1", "o1", 1);
+        Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1", 1);
+        Area source = new Area("a1");
+        Area destination = new Area("a2");
+        Ride ride =  Ride.createRide(customer, source, destination);
+        ride.setDriver(captain);
+        system.addUser(customer);
+        system.addUser(captain);
+        system.addAreaDB(source);
+        system.addAreaDB(destination);
+        system.addRide(ride);
+        Ride temp = system.searchRide(ride.getID());
+        //System.out.println(temp.toString());
+
+        RideEvent rideEvent = new CustomerAcceptedEvent(ride);
+        RideEvent rideEvent1 = new RideEndedEvent(ride);
+        system.saveEvent(rideEvent);
+        system.saveEvent(rideEvent1);
+
+        system.getEvent(ride);
+
+        Admin admin = new Admin("a","a","a","a");
+        admin.listRideLogs(ride.getID());
     }
 }

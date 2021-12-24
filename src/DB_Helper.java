@@ -306,8 +306,7 @@ public class DB_Helper implements IDataBase{
         }
     }
 
-    @Override
-    public void addArea(Area area) {
+    public void addAreaDB(Area area) {
         String addAreaQuery = "INSERT INTO Area VALUES(?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(addAreaQuery);
@@ -437,8 +436,8 @@ public class DB_Helper implements IDataBase{
         ride.setDriver(captain);
         db_helper.addUser(customer);
         db_helper.addUser(captain);
-        db_helper.addArea(source);
-        db_helper.addArea(destination);
+        db_helper.addAreaDB(source);
+        db_helper.addAreaDB(destination);
         db_helper.addRide(ride);
         Ride temp = db_helper.searchRide(ride.getID());
         System.out.println(temp.toString());
