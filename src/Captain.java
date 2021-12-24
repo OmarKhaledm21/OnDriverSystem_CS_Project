@@ -28,7 +28,6 @@ public class Captain extends User{
         this.ride = null;
         this.ridesHistory = new ArrayList<>();
     }
-
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
 
     public String getNationalID() {

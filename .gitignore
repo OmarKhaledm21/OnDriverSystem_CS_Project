@@ -48,4 +48,4 @@ fabric.properties
 
 .vscode
 
-db/
+db/*

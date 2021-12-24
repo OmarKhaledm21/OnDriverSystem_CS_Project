@@ -13,5 +13,6 @@ public interface IDataBase {
     public Ride searchRide(Ride ride);
     public Ride searchRide(int rideID);
     public Area searchArea(String location);
+    public boolean SearchArea(Area area);
 }
 

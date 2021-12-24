@@ -57,14 +57,29 @@ public class OnDriverSystem implements IDataBase{
         }
     }
 
-    public User login(String username, String password) {
-        this.currentUser = null;
-        User user = db.search(username);
+    public User login(){
+        Scanner user_input = new Scanner(System.in);
+        System.out.println("Enter Username and Password Respectively: ");
+        String userName,password;
+        userName = user_input.next();
+        password = user_input.next();
 
-        if (user != null) {
-            if (user.getPassword().equals(password)) {
+        User user = this.userList.get(userName);
+
+        if(user != null){
+            if(user.getPassword().equals(password)){
                 this.currentUser = user;
+                System.out.println("Logged in!");
+            }else{
+                while (!user.getPassword().equals(password)){
+                    System.out.println("Wrong password, please retype your password!");
+                    password = user_input.next();
+                }
+                this.currentUser = user;
+                System.out.println("Logged in!");
             }
+        }else{
+            System.out.println("User is not registered in the system!");
         }
         return this.currentUser;
     }
@@ -104,7 +119,7 @@ public class OnDriverSystem implements IDataBase{
             String nationalID = user_input.next();
             String licenseNumber = user_input.next();
             user = new Captain(userName,password,email,mobileNumber,nationalID,licenseNumber,0);
-            this.inActiveUsers.put(userName, (Captain) user);
+            this.inActiveUsers.put(userName,  user);
             this.db.addUser(user);
         }else{
             user = new Customer(userName,password,email,mobileNumber,1);
@@ -128,6 +143,8 @@ public class OnDriverSystem implements IDataBase{
                         captain.notify(new NewRideNotification(ride));
                     }
                 }
+            }else{
+                continue;
             }
         }
     }
@@ -204,6 +221,12 @@ public class OnDriverSystem implements IDataBase{
     public Area searchArea(String location) {
         return db.searchArea(location);
     }
+
+    @Override
+    public boolean SearchArea(Area area) {
+        return db.SearchArea(area);
+    }
 }
+
 
 

@@ -8,7 +8,7 @@ public class OfferPriceEvent extends  RideEvent{
 
     @Override
     public String toString() {
-        return "Offer Price EVENT!!! Driver: "+ this.ride.getDriver().toString()+" Offered a price for this ride "+offer.getOfferedPrice();
+        return "Offer Price EVENT!!! Driver: "+ this.offer.getDriver().toString()+" Offered a price for this ride "+offer.getOfferedPrice();
 
     }
 }

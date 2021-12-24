@@ -2,7 +2,7 @@ import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DB_Helper implements IDataBase{
+public class DB_Helper implements IDataBase {
     private static Connection connection;
     private final String url = "jdbc:sqlite:";
     private final String dbPath = "db/OnDriver.db";
@@ -20,7 +20,8 @@ public class DB_Helper implements IDataBase{
             }
 
 
-        } catch (Exception e) { }
+        } catch (Exception e) {
+        }
     }
 
     public void CreateDB() {
@@ -46,13 +47,13 @@ public class DB_Helper implements IDataBase{
                 "UserName TEXT PRIMARY KEY," +
                 "FOREIGN KEY (UserName) REFERENCES Users (UserName)" +
                 ");";
-    //TODO
-        String areaTable="CREATE TABLE Area(" +
+        //TODO
+        String areaTable = "CREATE TABLE Area(" +
                 "Location TEXT PRIMARY KEY NOT NULL" +
                 ");";
 
         String createRidesTable = "CREATE TABLE Rides(" +
-                "RideID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "RideID INTEGER PRIMARY KEY," +
                 "Source TEXT NOT NULL," +
                 "Destination TEXT NOT NULL," +
                 "RideStatus TEXT NOT NULL," +
@@ -99,25 +100,25 @@ public class DB_Helper implements IDataBase{
         }
     }
 
-    public ArrayList<User> selectAll(){
+    public ArrayList<User> selectAll() {
         ArrayList<User> db_List = new ArrayList<>();
         String selectionQuery = "SELECT UserName FROM Users;";
         try {
             ResultSet resultSet = statement.executeQuery(selectionQuery);
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 String userName = resultSet.getString("UserName");
                 User user = search(userName);
-                if((user != null)){
+                if ((user != null)) {
                     db_List.add(user);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return db_List;
     }
 
-    public boolean addUser(User user){
+    public boolean addUser(User user) {
         String addQuery = "INSERT INTO Users(UserName, PassWord, BirthDate, Email, MobileNumber, Type, Status) VALUES (?, ?, ?, ?, ?, ?, ?);";
         try {
             String userType = user.getClass().getName();
@@ -144,8 +145,8 @@ public class DB_Helper implements IDataBase{
         return true;
     }
 
-    public boolean activateUser(User user){
-        if(userExist(user)) {
+    public boolean activateUser(User user) {
+        if (userExist(user)) {
             String activationQuery = "UPDATE Users SET Status = 1 WHERE UserName = ? ;";
             try {
                 PreparedStatement preparedStatement = connection.prepareStatement(activationQuery);
@@ -156,12 +157,12 @@ public class DB_Helper implements IDataBase{
                 return false;
             }
             return true;
-        }else
+        } else
             return false;
     }
 
-    public boolean deleteUser(User user){
-        if(userExist(user)) {
+    public boolean deleteUser(User user) {
+        if (userExist(user)) {
             String deleteQuery = "DELETE FROM Users WHERE UserName = ? ;";
             try {
                 PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery);
@@ -172,11 +173,11 @@ public class DB_Helper implements IDataBase{
                 return false;
             }
             return true;
-        }else
+        } else
             return false;
     }
 
-    public User search(String username){
+    public User search(String username) {
         User user = null;
         try {
             String usersQueryString = "SELECT * FROM Users WHERE UserName = ?";
@@ -185,7 +186,7 @@ public class DB_Helper implements IDataBase{
             usersQuery.setString(1, username);
             ResultSet userSet = usersQuery.executeQuery();
 
-            if(userSet.next()){
+            if (userSet.next()) {
 
                 int userStatus = userSet.getInt("Status");
                 String userType = userSet.getString("Type");
@@ -193,7 +194,7 @@ public class DB_Helper implements IDataBase{
                 String email = userSet.getString("Email");
                 String mobileNumber = userSet.getString("MobileNumber");
 
-                if(userType.equals("Captain")){
+                if (userType.equals("Captain")) {
                     String driverQueryString = "SELECT * FROM Drivers WHERE UserName = ?";
                     PreparedStatement driversQuery = connection.prepareStatement(driverQueryString);
 
@@ -203,10 +204,12 @@ public class DB_Helper implements IDataBase{
                     String nationalID = driverSet.getString("NationalID");
                     String licenseNumber = driverSet.getString("LicenseNumber");
 
-                    user = new Captain(username, password, email, mobileNumber, nationalID, licenseNumber,userStatus);
+                    user = new Captain(username, password, email, mobileNumber, nationalID, licenseNumber, userStatus);
 
-                }else if(userType.equals("Customer")){
-                    user = new Customer(username, password, email, mobileNumber,userStatus);
+                } else if (userType.equals("Customer")) {
+                    user = new Customer(username, password, email, mobileNumber, userStatus);
+                } else if (userType.equals("Admin")) {
+                    user = new Admin(username, password, email, mobileNumber);
                 }
             }
         } catch (SQLException e) {
@@ -226,7 +229,7 @@ public class DB_Helper implements IDataBase{
             preparedStatement.setString(1, driver.getUsername());
             preparedStatement.setString(2, driver.getNationalID());
             preparedStatement.setString(3, driver.getLicenseNumber());
-            preparedStatement.setDouble(4,driver.getAverageRating());
+            preparedStatement.setDouble(4, driver.getAverageRating());
             preparedStatement.executeUpdate();
 
         } catch (Exception e) {
@@ -249,16 +252,16 @@ public class DB_Helper implements IDataBase{
         return true;
     }
 
-    public boolean userExist(User user){
-        if(user==null){
+    public boolean userExist(User user) {
+        if (user == null) {
             return false;
         }
-        return ( search(user.getUsername()) != null );
+        return (search(user.getUsername()) != null);
     }
 
     @Override
     public boolean suspendUser(User user) {
-        if(userExist(user)) {
+        if (userExist(user)) {
             String suspendQuery = "UPDATE Users SET Status = 0 WHERE UserName = ? ;";
             try {
                 PreparedStatement preparedStatement = connection.prepareStatement(suspendQuery);
@@ -268,7 +271,7 @@ public class DB_Helper implements IDataBase{
                 return false;
             }
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -279,43 +282,68 @@ public class DB_Helper implements IDataBase{
                 "VALUES(?,?,?,?,?,?,?);";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(addRideQuery);
-            preparedStatement.setString(1,ride.getSource().getLocation());
-            preparedStatement.setString(2,ride.getDestination().getLocation());
-            preparedStatement.setString(3,ride.getRideStatus().toString());
-            preparedStatement.setDouble(4,ride.getPrice());
-            preparedStatement.setString(5,ride.getCustomer().getUsername());
-            preparedStatement.setString(6,ride.getDriver().getUsername());
-            preparedStatement.setInt(7,ride.getRating());
+            preparedStatement.setString(1, ride.getSource().getLocation());
+            preparedStatement.setString(2, ride.getDestination().getLocation());
+            preparedStatement.setString(3, ride.getRideStatus().toString());
+            preparedStatement.setDouble(4, ride.getPrice());
+            preparedStatement.setString(5, ride.getCustomer().getUsername());
+            preparedStatement.setString(6, ride.getDriver().getUsername());
+            preparedStatement.setInt(7, ride.getRating());
             preparedStatement.executeUpdate();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    //TODO add ride counter.....
+    @Override
+    public void changeRideStatus(Ride ride) {
+        String updateStatus = "UPDATE Rides SET RideStatus = ? , Rating = ? WHERE Customer_Username = ? AND RideID = ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(updateStatus);
+            preparedStatement.setString(1, ride.getRideStatus().toString());
+            preparedStatement.setInt(2, ride.getRating());
+            preparedStatement.setString(3, ride.getCustomer().getUsername());
+            preparedStatement.setInt(4, ride.getID());
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void changeRideStatus(Ride ride) {
-        String updateStatus = "UPDATE Rides SET RideStatus ? WHERE Customer_Username = ?;";
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(updateStatus);
-            preparedStatement.setString(1,ride.getRideStatus().toString());
-            preparedStatement.setString(2,ride.getCustomer().getUsername());
-            preparedStatement.executeUpdate();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
     public void addAreaDB(Area area) {
+        if (!SearchArea(area)){
         String addAreaQuery = "INSERT INTO Area VALUES(?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(addAreaQuery);
-            preparedStatement.setString(1,area.getLocation());
+            preparedStatement.setString(1, area.getLocation());
             preparedStatement.executeUpdate();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    }
+    @Override
+    public boolean SearchArea(Area area) {
+        String query = "SELECT * FROM Area WHERE Location = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, area.getLocation());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                String loc = resultSet.getString("Location");
+                return true;
+            } else {
+               return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     @Override
     public void getEvent(Ride ride) {
@@ -341,7 +369,7 @@ public class DB_Helper implements IDataBase{
                 }
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -353,11 +381,11 @@ public class DB_Helper implements IDataBase{
         String logQuery = "INSERT INTO Logs (EventName,Log,RideID) VALUES(?,?,?);";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(logQuery);
-            preparedStatement.setString(1,log.getClass().getName());
-            preparedStatement.setString(2,log.toString());
-            preparedStatement.setInt(3,ride.getID());
+            preparedStatement.setString(1, log.getClass().getName());
+            preparedStatement.setString(2, log.toString());
+            preparedStatement.setInt(3, ride.getID());
             preparedStatement.executeUpdate();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -365,12 +393,12 @@ public class DB_Helper implements IDataBase{
     @Override
     public Ride searchRide(Ride ride) {
         Ride res = null;
-        String selectRideQuery="SELECT * FROM Rides WHERE RideID = ?;";
+        String selectRideQuery = "SELECT * FROM Rides WHERE RideID = ?;";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(selectRideQuery);
             preparedStatement.setInt(1, ride.getID());
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 Customer tempCustomer = (Customer) search(resultSet.getString("Customer_Username"));
                 Captain tempCaptain = (Captain) search(resultSet.getString("Captain_Username"));
                 Area tempSource = searchArea(resultSet.getString("Source"));
@@ -378,7 +406,7 @@ public class DB_Helper implements IDataBase{
                 res = new Ride(tempCustomer, tempSource, tempDestination);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -389,40 +417,40 @@ public class DB_Helper implements IDataBase{
     @Override
     public Ride searchRide(int rideID) {
         Ride res = null;
-        String selectRideQuery="SELECT * FROM Rides WHERE RideID = ?;";
+        String selectRideQuery = "SELECT * FROM Rides WHERE RideID = ?;";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(selectRideQuery);
             preparedStatement.setInt(1, rideID);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 Customer tempCustomer = (Customer) search(resultSet.getString("Customer_Username"));
                 Captain tempCaptain = (Captain) search(resultSet.getString("Captain_Username"));
                 Area tempSource = searchArea(resultSet.getString("Source"));
                 Area tempDestination = searchArea(resultSet.getString("Destination"));
                 res = new Ride(tempCustomer, tempSource, tempDestination);
-            }else{
+            } else {
                 System.out.println("This ride doesn't exist!");
             }
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return res;
     }
 
-    public Area searchArea(String location){
+    public Area searchArea(String location) {
         String query = "SELECT * FROM Area WHERE Location = ?";
         Area area = null;
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, location);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 area = new Area(resultSet.getString("Location"));
-            }else{
+            } else {
                 System.out.println("Area not found!");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return area;
@@ -433,16 +461,18 @@ public class DB_Helper implements IDataBase{
         Customer customer = new Customer("o1", "o1", "o1", "o1", 1);
         Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1", 1);
         Area source = new Area("a1");
-        Area destination = new Area("a2");
-        Ride ride =  Ride.createRide(customer, source, destination);
+        Area destination = new Area("b2");
+        Area wrong = new Area("a1");
+        Ride ride = Ride.createRide(customer, source, destination);
         ride.setDriver(captain);
         db_helper.addUser(customer);
         db_helper.addUser(captain);
         db_helper.addAreaDB(source);
         db_helper.addAreaDB(destination);
-        db_helper.addRide(ride);
-        Ride temp = db_helper.searchRide(ride.getID());
-        System.out.println(temp.toString());
+        db_helper.addAreaDB(wrong);
+        //db_helper.addRide(ride);
+        //Ride temp = db_helper.searchRide(ride.getID());
+        //System.out.println(temp.toString());
 
         RideEvent rideEvent = new CustomerAcceptedEvent(ride);
         RideEvent rideEvent1 = new RideEndedEvent(ride);
