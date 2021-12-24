@@ -322,7 +322,7 @@ public class DB_Helper implements IDataBase{
     }
 
     @Override
-    public RideEvent getEvent(Ride ride) {
+    public void getEvent(Ride ride) {
         String query = "SELECT * FROM Logs Where RideID = ?";
         int rideID = ride.getID();
         RideEvent rideEvent = null;
@@ -330,7 +330,7 @@ public class DB_Helper implements IDataBase{
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, rideID);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 if (resultSet.getString("EventName").equals("CustomerAcceptedEvent")) {
                     rideEvent = new CustomerAcceptedEvent(ride);
                 } else if (resultSet.getString("EventName").equals("DriverArrivedEvent")) {
@@ -340,12 +340,12 @@ public class DB_Helper implements IDataBase{
                 } else if (resultSet.getString("EventName").equals("RideEndedEvent")) {
                     rideEvent = new RideEndedEvent(ride);
                 }
+                System.out.println(rideEvent.toString());
             }
 
         }catch (Exception e){
             e.printStackTrace();
         }
-        return rideEvent;
     }
 
     @Override
@@ -388,6 +388,30 @@ public class DB_Helper implements IDataBase{
         return res;
     }
 
+    @Override
+    public Ride searchRide(int rideID) {
+        Ride res = null;
+        String selectRideQuery="SELECT * FROM Rides WHERE RideID = ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(selectRideQuery);
+            preparedStatement.setInt(1, rideID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()){
+                Customer tempCustomer = (Customer) search(resultSet.getString("Customer_Username"));
+                Captain tempCaptain = (Captain) search(resultSet.getString("Captain_Username"));
+                Area tempSource = searchArea(resultSet.getString("Source"));
+                Area tempDestination = searchArea(resultSet.getString("Destination"));
+                res = new Ride(tempCustomer, tempSource, tempDestination);
+            }else{
+                System.out.println("This ride doesn't exist!");
+            }
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
     public Area searchArea(String location){
         String query = "SELECT * FROM Area WHERE Location = ?";
         Area area = null;
@@ -397,6 +421,8 @@ public class DB_Helper implements IDataBase{
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
                 area = new Area(resultSet.getString("Location"));
+            }else{
+                System.out.println("Area not found!");
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -417,11 +443,15 @@ public class DB_Helper implements IDataBase{
         db_helper.addArea(source);
         db_helper.addArea(destination);
         db_helper.addRide(ride);
-        Ride temp = db_helper.searchRide(ride);
+        Ride temp = db_helper.searchRide(ride.getID());
         System.out.println(temp.toString());
+
         RideEvent rideEvent = new CustomerAcceptedEvent(ride);
+        RideEvent rideEvent1 = new RideEndedEvent(ride);
         db_helper.saveEvent(rideEvent);
-        System.out.println(db_helper.getEvent(ride).toString());
+        db_helper.saveEvent(rideEvent1);
+
+        db_helper.getEvent(ride);
     }
 
 }

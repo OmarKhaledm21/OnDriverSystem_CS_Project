@@ -184,8 +184,8 @@ public class OnDriverSystem implements IDataBase{
     }
 
     @Override
-    public RideEvent getEvent(Ride ride) {
-        return db.getEvent(ride);
+    public void getEvent(Ride ride) {
+        db.getEvent(ride);
     }
 
     public void saveEvent(RideEvent log) {
@@ -205,6 +205,11 @@ public class OnDriverSystem implements IDataBase{
     @Override
     public Ride searchRide(Ride ride) {
         return db.searchRide(ride);
+    }
+
+    @Override
+    public Ride searchRide(int rideID) {
+        return db.searchRide(rideID);
     }
 
     @Override
