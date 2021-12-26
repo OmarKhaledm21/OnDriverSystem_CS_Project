@@ -118,7 +118,7 @@ public class OnDriverSystem implements IDataBase{
             System.out.println("Enter National ID, License Number: ");
             String nationalID = user_input.next();
             String licenseNumber = user_input.next();
-            user = new Captain(userName,password,email,mobileNumber,nationalID,licenseNumber,0);
+            user = new Captain(userName,password,email,mobileNumber,nationalID,licenseNumber,null,0);
             this.inActiveUsers.put(userName,  user);
             this.db.addUser(user);
         }else{
@@ -225,6 +225,11 @@ public class OnDriverSystem implements IDataBase{
     @Override
     public boolean SearchArea(Area area) {
         return db.SearchArea(area);
+    }
+
+    @Override
+    public void driverMoved(Captain captain) {
+        db.driverMoved(captain);
     }
 }
 

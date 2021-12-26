@@ -21,4 +21,9 @@ public class Area {
     public boolean isFavouriteDriver(Captain captain){
         return pinnedCaptain.contains(captain);
     }
+
+    @Override
+    public String toString() {
+        return location;
+    }
 }

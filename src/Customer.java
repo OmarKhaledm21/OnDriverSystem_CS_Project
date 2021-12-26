@@ -91,8 +91,8 @@ public class Customer extends User {
                 OnDriverSystem.getSystem().addRide(this.ride);
 
                 //TODO TODO TODO TODO TODO 3SHAN LESA FAKEEEEE ZY EL EX
-                DriverArrivedEvent driverArrivedEvent = new DriverArrivedEvent(this.ride);
-                this.ride.addToEventLog(driverArrivedEvent);
+//                DriverArrivedEvent driverArrivedEvent = new DriverArrivedEvent(this.ride);
+//                this.ride.addToEventLog(driverArrivedEvent);
                 //TODO TODO TODO TODO TODO ELY FO2 DA FAKEE ZY EL EX
 
                 this.ride.setRideStatus(RideStatus.IN_PROGRESS);

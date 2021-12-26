@@ -163,10 +163,11 @@ public class Admin extends User{
 
     public static void main(String[] args) {
         OnDriverSystem system = OnDriverSystem.getSystem();
-        Customer customer = new Customer("o1", "o1", "o1", "o1", 1);
-        Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1", 1);
         Area source = new Area("a1");
         Area destination = new Area("a2");
+        Customer customer = new Customer("o1", "o1", "o1", "o1", 1);
+        Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1",source, 1);
+
         Ride ride =  Ride.createRide(customer, source, destination);
         ride.setDriver(captain);
         captain.setRide(ride);

@@ -1,15 +1,16 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Captain extends User{
+public class Captain extends User {
     private String nationalID;
     private String licenseNumber;
     private double averageRating;
     private ArrayList<Notification> notificationList;
     private Ride ride;
     private ArrayList<Ride> ridesHistory;
+    private Area currentLocation;
 
-    public Captain(){
+    public Captain() {
         this.averageRating = 0.0;
         this.notificationList = new ArrayList<>();
         this.ride = null;
@@ -17,16 +18,18 @@ public class Captain extends User{
         nationalID = "";
         licenseNumber = "";
         this.status = 0;
+        currentLocation = null;
     }
 
-    public Captain(String username, String password, String email, String mobileNumber, String nationalID, String licenseNumber,int status){
-        super(username,password,email,mobileNumber,status);
+    public Captain(String username, String password, String email, String mobileNumber, String nationalID, String licenseNumber, Area currentLocation, int status) {
+        super(username, password, email, mobileNumber, status);
         this.nationalID = nationalID;
         this.licenseNumber = licenseNumber;
-        this.averageRating =0.0;
+        this.averageRating = 0.0;
         this.notificationList = new ArrayList<>();
         this.ride = null;
         this.ridesHistory = new ArrayList<>();
+        this.currentLocation = currentLocation;
     }
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
 
@@ -51,11 +54,11 @@ public class Captain extends User{
         return averageRating;
     }
 
-    public void setRide(Ride ride){
+    public void setRide(Ride ride) {
         this.ride = ride;
     }
 
-    public Ride getRide(){
+    public Ride getRide() {
         return this.ride;
     }
 
@@ -79,36 +82,44 @@ public class Captain extends User{
         }
     }
 
-    public void offerPrice(Ride ride){
+    public Area getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public void setCurrentLocation(Area currentLocation) {
+        this.currentLocation = currentLocation;
+    }
+
+    public void offerPrice(Ride ride) {
         System.out.println("Enter your offer: ");
         Scanner input = new Scanner(System.in);
         double price = input.nextDouble();
         Offer offeredPrice = new Offer(this, price);
         ride.addOffer(offeredPrice);
-        OfferPriceEvent offerPriceEvent = new OfferPriceEvent(ride,offeredPrice);
+        OfferPriceEvent offerPriceEvent = new OfferPriceEvent(ride, offeredPrice);
         ride.addToEventLog(offerPriceEvent);
     }
 
-    public void notify(Notification notification){
-        if (notification instanceof CustomerAcceptedRideNotification){
-                this.ride = notification.getRide();
-                this.ride.setDriver(this);
-        }else {
-                if (notification instanceof FinishedRideNotification) {
-                    this.ridesHistory.add(ride);
-                    this.ride = null;
-                } else {
-                    this.notificationList.add(notification);
-                }
+    public void notify(Notification notification) {
+        if (notification instanceof CustomerAcceptedRideNotification) {
+            this.ride = notification.getRide();
+            this.ride.setDriver(this);
+        } else {
+            if (notification instanceof FinishedRideNotification) {
+                this.ridesHistory.add(ride);
+                this.ride = null;
+            } else {
+                this.notificationList.add(notification);
             }
+        }
     }
 
-    public void manageNotification(){
+    public void manageNotification() {
         int notificationIndex = 0;
         int choice = 0;
 
         while (notificationIndex != -1) {
-            for (int i = 0; i < notificationList.size(); i++){
+            for (int i = 0; i < notificationList.size(); i++) {
                 if (!(notificationList.get(i).getRide().getRideStatus().equals(RideStatus.PENDING))) {
                     notificationList.remove(i);
                     i--;
@@ -133,9 +144,9 @@ public class Captain extends User{
                     if (choice == 1) {
                         offerPrice(notificationList.get(notificationIndex - 1).getRide());
                         notificationList.remove(notificationIndex - 1);
-                    } else if (choice == 2){
+                    } else if (choice == 2) {
                         notificationList.remove(notificationIndex - 1);
-                    }else{
+                    } else {
                         System.out.println("Invalid input, returning to menu!");
                     }
                 }
@@ -144,37 +155,53 @@ public class Captain extends User{
     }
 
 
-    public void addFavouriteArea(){
+    public void addFavouriteArea() {
         Scanner input = new Scanner(System.in);
         System.out.print("Enter area name: ");
         String location = input.nextLine();
         Area favouriteArea = new Area(location);
         boolean found = false;
-        for (Area area : OnDriverSystem.getSystem().getAreaList()){
-            if (location.equals(area.getLocation())){
+        for (Area area : OnDriverSystem.getSystem().getAreaList()) {
+            if (location.equals(area.getLocation())) {
                 area.addToPinnedDrivers(this);
                 found = true;
             }
         }
-        if (!found){
+        if (!found) {
             favouriteArea.addToPinnedDrivers(this);
             OnDriverSystem.getSystem().addArea(favouriteArea);
         }
     }
 
-    public void listRatings(){
-        if(ridesHistory.isEmpty()){
+    public void listRatings() {
+        if (ridesHistory.isEmpty()) {
             System.out.println("No rides");
-        }
-        else{
-            for (Ride ride : ridesHistory){
+        } else {
+            for (Ride ride : ridesHistory) {
                 System.out.println(ride.toString() + "\nRating: " + ride.getRating());
             }
         }
     }
 
+    public void moveToClient() {
+        if (this.ride == null) {
+            System.out.println("you are not in a ride at the moment");
+        } else {
+            if (this.currentLocation != ride.getSource()) {
+                this.currentLocation = ride.getSource();
+                OnDriverSystem.getSystem().driverMoved(this);
+                RideEvent rideEvent = new DriverArrivedEvent(this.ride);
+                OnDriverSystem.getSystem().saveEvent(rideEvent);
+            } else {
+                System.out.println("Your are Currently at the Pick up");
+                RideEvent rideEvent = new DriverArrivedEvent(this.ride);
+                OnDriverSystem.getSystem().saveEvent(rideEvent);
+            }
+        }
+    }
 
-    public void RideStatus(){
+
+    public void RideStatus() {
         System.out.println(this.ride.getRideStatus());
     }
 
@@ -182,8 +209,8 @@ public class Captain extends User{
     public void displayMenu() {
         Scanner input = new Scanner(System.in);
         int choice = 0;
-        while(choice != 4){
-            System.out.println("1. View and manage notifications\n2. View rides history\n3. Add a favourite area\n4. logout");
+        while (choice != 6) {
+            System.out.println("1. View and manage notifications\n2. View rides history\n3. Add a favourite area\n4. Move To Client Location\n5. Check Current Location\n6. logout");
             choice = input.nextInt();
             input.nextLine();
             switch (choice) {
@@ -197,6 +224,12 @@ public class Captain extends User{
                     addFavouriteArea();
                     break;
                 case 4:
+                    moveToClient();
+                    break;
+                case 5:
+                    System.out.println(getCurrentLocation().toString());
+                    break;
+                case 6:
                     break;
                 default:
                     System.out.println("Invalid choice");

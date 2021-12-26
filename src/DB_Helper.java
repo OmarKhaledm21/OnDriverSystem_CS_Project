@@ -40,6 +40,7 @@ public class DB_Helper implements IDataBase {
                 "NationalID TEXT NOT NULL," +
                 "LicenseNumber TEXT NOT NULL," +
                 "AverageRating REAL DEFAULT 0.0," +
+                "CurrentLocation TEXT," +
                 "FOREIGN KEY (UserName) REFERENCES Users (UserName)" +
                 ");";
 
@@ -203,8 +204,9 @@ public class DB_Helper implements IDataBase {
                     ResultSet driverSet = driversQuery.executeQuery();
                     String nationalID = driverSet.getString("NationalID");
                     String licenseNumber = driverSet.getString("LicenseNumber");
-
-                    user = new Captain(username, password, email, mobileNumber, nationalID, licenseNumber, userStatus);
+                    String currentLocation = driverSet.getString("CurrentLocation");
+                    Area currLocation = new Area(currentLocation);
+                    user = new Captain(username, password, email, mobileNumber, nationalID, licenseNumber,currLocation, userStatus);
 
                 } else if (userType.equals("Customer")) {
                     user = new Customer(username, password, email, mobileNumber, userStatus);
@@ -222,14 +224,15 @@ public class DB_Helper implements IDataBase {
     }
 
     public boolean addToDriverTable(Captain driver) {
-        String query = "INSERT INTO Drivers(UserName,NationalId,LicenseNumber,AverageRating)" +
-                "VALUES(?,?,?,?);";
+        String query = "INSERT INTO Drivers(UserName,NationalId,LicenseNumber,AverageRating,CurrentLocation)" +
+                "VALUES(?,?,?,?,?);";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, driver.getUsername());
             preparedStatement.setString(2, driver.getNationalID());
             preparedStatement.setString(3, driver.getLicenseNumber());
             preparedStatement.setDouble(4, driver.getAverageRating());
+            preparedStatement.setString(5,driver.getCurrentLocation().toString());
             preparedStatement.executeUpdate();
 
         } catch (Exception e) {
@@ -314,17 +317,18 @@ public class DB_Helper implements IDataBase {
 
     @Override
     public void addAreaDB(Area area) {
-        if (!SearchArea(area)){
-        String addAreaQuery = "INSERT INTO Area VALUES(?)";
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(addAreaQuery);
-            preparedStatement.setString(1, area.getLocation());
-            preparedStatement.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!SearchArea(area)) {
+            String addAreaQuery = "INSERT INTO Area VALUES(?)";
+            try {
+                PreparedStatement preparedStatement = connection.prepareStatement(addAreaQuery);
+                preparedStatement.setString(1, area.getLocation());
+                preparedStatement.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
-    }
+
     @Override
     public boolean SearchArea(Area area) {
         String query = "SELECT * FROM Area WHERE Location = ?";
@@ -336,12 +340,26 @@ public class DB_Helper implements IDataBase {
                 String loc = resultSet.getString("Location");
                 return true;
             } else {
-               return false;
+                return false;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public void driverMoved(Captain captain) {
+        String query = "UPDATE Drivers SET CurrentLocation = ? WHERE UserName = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,captain.getCurrentLocation().toString());
+            preparedStatement.setString(2,captain.getUsername());
+            preparedStatement.executeUpdate();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
@@ -457,12 +475,13 @@ public class DB_Helper implements IDataBase {
     }
 
     public static void main(String[] args) {
-        DB_Helper db_helper = new DB_Helper();
-        Customer customer = new Customer("o1", "o1", "o1", "o1", 1);
-        Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1", 1);
         Area source = new Area("a1");
         Area destination = new Area("b2");
         Area wrong = new Area("a1");
+        DB_Helper db_helper = new DB_Helper();
+        Customer customer = new Customer("o1", "o1", "o1", "o1", 1);
+        Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1",destination, 1);
+
         Ride ride = Ride.createRide(customer, source, destination);
         ride.setDriver(captain);
         db_helper.addUser(customer);
@@ -474,10 +493,10 @@ public class DB_Helper implements IDataBase {
         //Ride temp = db_helper.searchRide(ride.getID());
         //System.out.println(temp.toString());
 
-        RideEvent rideEvent = new CustomerAcceptedEvent(ride);
-        RideEvent rideEvent1 = new RideEndedEvent(ride);
-        db_helper.saveEvent(rideEvent);
-        db_helper.saveEvent(rideEvent1);
+//        RideEvent rideEvent = new CustomerAcceptedEvent(ride);
+//        RideEvent rideEvent1 = new RideEndedEvent(ride);
+//        db_helper.saveEvent(rideEvent);
+//        db_helper.saveEvent(rideEvent1);
 
         db_helper.getEvent(ride);
     }
