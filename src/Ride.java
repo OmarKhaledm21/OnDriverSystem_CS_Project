@@ -11,7 +11,7 @@ public class Ride {
     private ArrayList<Offer> priceOffers;
     private Customer customer;
     private ArrayList<RideEvent> rideEvents;
-    private static int ride_id=0;
+    protected static int ride_id=0;
     private int rideID;
 
     public Ride(Customer customer, Area source, Area destination) {

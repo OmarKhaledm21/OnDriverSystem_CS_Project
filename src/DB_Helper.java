@@ -13,15 +13,14 @@ public class DB_Helper implements IDataBase {
     DB_Helper() {
         try {
             File file = new File(this.dbPath);
-            file.delete();
             boolean exist = file.exists();
             connection = DriverManager.getConnection(this.url + this.dbPath);
             statement = connection.createStatement();
-            if (exist) {
+            if (!exist) {
                 CreateDB();
                 System.out.println("Database Created.");
             }
-            CreateDB();
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,7 +52,7 @@ public class DB_Helper implements IDataBase {
                 "UserName TEXT PRIMARY KEY," +
                 "FOREIGN KEY (UserName) REFERENCES Users (UserName) ON DELETE CASCADE" +
                 ");";
-        
+
         String areaTable = "CREATE TABLE Areas(" +
                 "Location TEXT PRIMARY KEY NOT NULL" +
                 ");";
@@ -85,7 +84,7 @@ public class DB_Helper implements IDataBase {
                 "Price REAL," +
                 "FOREIGN KEY (RideID) REFERENCES Rides (RideID)," +
                 "FOREIGN KEY (CaptainUsername) REFERENCES Users (UserName)," +
-                "PRIMARY KEY (CustomerUsername, RideID)" +
+                "PRIMARY KEY (CaptainUsername, RideID)" +
                 ");";
 
         String createNotificationsTable = "CREATE TABLE Notifs(" +
@@ -101,13 +100,13 @@ public class DB_Helper implements IDataBase {
                 "UserName TEXT PRIMARY KEY," +
                 "FOREIGN KEY (UserName) REFERENCES Users (UserName)" +
                 ");";
-        
+
         String createFavArea = "CREATE TABLE CaptainFavArea(" +
-                "CaptainUsername TEXT NOT NULL,"+
-                "Area TEXT NOT NULL,"+
-                "FOREIGN KEY (CaptainUsername) REFERENCES Users (UserName),"+
-                "FOREIGN KEY (Area) REFERENCES Areas (Location),"+
-                "PRIMARY KEY (CaptainUsername, Area)"+
+                "CaptainUsername TEXT NOT NULL," +
+                "Area TEXT NOT NULL," +
+                "FOREIGN KEY (CaptainUsername) REFERENCES Users (UserName)," +
+                "FOREIGN KEY (Area) REFERENCES Areas (Location)," +
+                "PRIMARY KEY (CaptainUsername, Area)" +
                 ");";
 
         String insertAdmin = "INSERT INTO Users(UserName,PassWord,Email,MobileNumber,Type,Status) " +
@@ -132,6 +131,7 @@ public class DB_Helper implements IDataBase {
             yeet.printStackTrace();
         }
     }
+
     ////////////////////////////// Users Controller ////////////////////////////////////////
     public ArrayList<User> selectAll() {
         ArrayList<User> db_List = new ArrayList<>();
@@ -238,7 +238,7 @@ public class DB_Helper implements IDataBase {
                     String licenseNumber = driverSet.getString("LicenseNumber");
                     String currentLocation = driverSet.getString("CurrentLocation");
                     Area currLocation = new Area(currentLocation);
-                    user = new Captain(username, password, email, mobileNumber, nationalID, licenseNumber,currLocation, userStatus);
+                    user = new Captain(username, password, email, mobileNumber, nationalID, licenseNumber, currLocation, userStatus);
 
                 } else if (userType.equals("Customer")) {
                     user = new Customer(username, password, email, mobileNumber, userStatus);
@@ -263,7 +263,7 @@ public class DB_Helper implements IDataBase {
             preparedStatement.setString(2, driver.getNationalID());
             preparedStatement.setString(3, driver.getLicenseNumber());
             preparedStatement.setDouble(4, driver.getAverageRating());
-            preparedStatement.setString(5,driver.getCurrentLocation().toString());
+            preparedStatement.setString(5, driver.getCurrentLocation().toString());
             preparedStatement.executeUpdate();
 
         } catch (Exception e) {
@@ -327,6 +327,7 @@ public class DB_Helper implements IDataBase {
             return false;
         }
     }
+
     ////////////////////////////// Rides Controller ////////////////////////////////////////
     @Override
     public void addRide(Ride ride) {
@@ -374,6 +375,22 @@ public class DB_Helper implements IDataBase {
     }
 
     // TODO add ride counter.....
+    public int rideCounter() {
+        int counter = 0;
+        String query = "SELECT * FROM Rides";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                counter++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return counter;
+
+    }
+
     @Override
     public void changeRideStatus(Ride ride) {
         String updateStatus = "UPDATE Rides SET RideStatus = ? , Rating = ? WHERE CustomerUsername = ? AND RideID = ?;";
@@ -403,6 +420,7 @@ public class DB_Helper implements IDataBase {
             }
         }
     }
+
     @Override
     public Area searchArea(String location) {
         String query = "SELECT * FROM Areas WHERE Location = ?";
@@ -428,17 +446,17 @@ public class DB_Helper implements IDataBase {
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1,captain.getCurrentLocation().toString());
-            preparedStatement.setString(2,captain.getUsername());
+            preparedStatement.setString(1, captain.getCurrentLocation().toString());
+            preparedStatement.setString(2, captain.getUsername());
             preparedStatement.executeUpdate();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
     ////////////////////////////// Events Controller ////////////////////////////////////////
-    
+
     @Override
     public ArrayList<RideEvent> getEvents(Ride ride) {
         ArrayList<RideEvent> events = new ArrayList<>();
@@ -513,9 +531,9 @@ public class DB_Helper implements IDataBase {
 
     ////////////////////////////// Offers Controller ////////////////////////////////////////
     @Override
-    public void addOffer(Offer offer){
+    public void addOffer(Offer offer) {
         //TODO: add offer
-    } 
+    }
 
 
     public static void main(String[] args) {
@@ -524,7 +542,7 @@ public class DB_Helper implements IDataBase {
         Area wrong = new Area("a1");
         DB_Helper db_helper = new DB_Helper();
         Customer customer = new Customer("o1", "o1", "o1", "o1", 1);
-        Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1",destination, 1);
+        Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1", destination, 1);
 
         Ride ride = Ride.createRide(customer, source, destination);
         ride.setDriver(captain);
@@ -534,7 +552,9 @@ public class DB_Helper implements IDataBase {
         db_helper.addArea(destination);
         db_helper.addArea(wrong);
         db_helper.addRide(ride);
+        db_helper.addRide(ride);
         db_helper.addNotification(new NewRideNotification(ride), captain);
+        System.out.println(db_helper.rideCounter());
         // db_helper.addRide(ride);
         // Ride temp = db_helper.searchRide(ride.getID());
         // System.out.println(temp.toString());

@@ -55,6 +55,11 @@ public class OnDriverSystem implements IDataBase{
                 this.userList.put(user.getUsername(),user);
             }
         }
+        rideCounter();
+    }
+
+    public void rideCounter(){
+        Ride.ride_id= db.rideCounter();
     }
 
     public User login(){
