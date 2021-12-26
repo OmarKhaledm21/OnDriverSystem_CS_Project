@@ -31,8 +31,8 @@ public class Customer extends User {
         System.out.println("Enter source and destination areas: ");
         String src = input.next(), dest = input.next();
         Area source = new Area(src), destination = new Area(dest);
-        OnDriverSystem.getSystem().addAreaDB(source);
-        OnDriverSystem.getSystem().addAreaDB(destination);
+        OnDriverSystem.getSystem().addArea(source);
+        OnDriverSystem.getSystem().addArea(destination);
 
         if (areas != null) {
             for (Area area : areas) {

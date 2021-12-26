@@ -149,13 +149,9 @@ public class OnDriverSystem implements IDataBase{
         }
     }
 
-    public void addArea(Area area){
-        areaList.add(area);
-    }
-
     @Override
-    public void addAreaDB(Area area) {
-        db.addAreaDB(area);
+    public void addArea(Area area) {
+        db.addArea(area);
     }
 
     @Override
@@ -189,8 +185,8 @@ public class OnDriverSystem implements IDataBase{
     }
 
     @Override
-    public void getEvent(Ride ride) {
-        db.getEvent(ride);
+    public ArrayList<RideEvent> getEvents(Ride ride) {
+        return db.getEvents(ride);
     }
 
     public void saveEvent(RideEvent log) {
@@ -208,11 +204,6 @@ public class OnDriverSystem implements IDataBase{
     }
 
     @Override
-    public Ride searchRide(Ride ride) {
-        return db.searchRide(ride);
-    }
-
-    @Override
     public Ride searchRide(int rideID) {
         return db.searchRide(rideID);
     }
@@ -222,14 +213,26 @@ public class OnDriverSystem implements IDataBase{
         return db.searchArea(location);
     }
 
+
+    public void updateCaptain(Captain captain) {
+        db.updateCaptain(captain);
+    }
+
     @Override
-    public boolean SearchArea(Area area) {
-        return db.SearchArea(area);
+    public void addNotification(Notification notification, Captain captain) {
+        // TODO Auto-generated method stub
+        
     }
 
     @Override
     public void driverMoved(Captain captain) {
         db.driverMoved(captain);
+    }
+
+    @Override
+    public void addOffer(Offer offer) {
+        // TODO Auto-generated method stub
+        
     }
 }
 

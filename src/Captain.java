@@ -50,7 +50,6 @@ public class Captain extends User {
     }
 
     public double getAverageRating() {
-        setAverageRating();
         return averageRating;
     }
 
@@ -80,6 +79,7 @@ public class Captain extends User {
         } else {
             this.averageRating = (double) sumRating / ridesHistory.size();
         }
+        OnDriverSystem.getSystem().updateCaptain(this);
     }
 
     public Area getCurrentLocation() {
@@ -100,19 +100,21 @@ public class Captain extends User {
         ride.addToEventLog(offerPriceEvent);
     }
 
-    public void notify(Notification notification) {
-        if (notification instanceof CustomerAcceptedRideNotification) {
-            this.ride = notification.getRide();
-            this.ride.setDriver(this);
-        } else {
-            if (notification instanceof FinishedRideNotification) {
-                this.ridesHistory.add(ride);
-                this.ride = null;
-            } else {
-                this.notificationList.add(notification);
+    public void notify(Notification notification){
+        if (notification instanceof CustomerAcceptedRideNotification){
+                this.ride = notification.getRide();
+                this.ride.setDriver(this);
+        }else {
+                if (notification instanceof FinishedRideNotification) {
+                    this.ridesHistory.add(ride);
+                    setAverageRating();
+                    this.ride = null;
+                } else {
+                    this.notificationList.add(notification);
+                }
             }
-        }
     }
+    
 
     public void manageNotification() {
         int notificationIndex = 0;

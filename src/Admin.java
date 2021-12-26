@@ -95,7 +95,7 @@ public class Admin extends User{
     public void listRideLogs(int rideID){
         Ride ride = OnDriverSystem.getSystem().searchRide(rideID);
         if(ride!=null){
-            OnDriverSystem.getSystem().getEvent(ride);
+            OnDriverSystem.getSystem().getEvents(ride);
         }
     }
 
@@ -174,8 +174,8 @@ public class Admin extends User{
         customer.setRide(ride);
         system.addUser(customer);
         system.addUser(captain);
-        system.addAreaDB(source);
-        system.addAreaDB(destination);
+        system.addArea(source);
+        system.addArea(destination);
         system.addRide(ride);
         Ride temp = system.searchRide(ride.getID());
         //System.out.println(temp.toString());
