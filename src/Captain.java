@@ -32,6 +32,16 @@ public class Captain extends User {
         this.currentLocation = currentLocation;
     }
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
+    @Override
+    public String toString() {
+        return "Captain Name: " + this.getUsername() +
+                ", National ID: " + this.getNationalID() +
+                ", License Number: " + this.getLicenseNumber() +
+                ", Average Rating: " + this.getAverageRating() +
+                ", Mobile Number: " + this.getMobileNumber() +
+                ", Email: " + this.getEmail() +
+                ", Current Location: " + this.getCurrentLocation();
+    }
 
     public String getNationalID() {
         return nationalID;

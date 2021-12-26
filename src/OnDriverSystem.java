@@ -235,6 +235,11 @@ public class OnDriverSystem implements IDataBase{
     }
 
     @Override
+    public ArrayList<String> searchLogs(int RideID) {
+        return db.searchLogs(RideID);
+    }
+
+    @Override
     public void addOffer(Offer offer) {
         // TODO Auto-generated method stub
         

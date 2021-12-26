@@ -431,8 +431,6 @@ public class DB_Helper implements IDataBase {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 area = new Area(resultSet.getString("Location"));
-            } else {
-                System.out.println("Area not found!");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -536,6 +534,24 @@ public class DB_Helper implements IDataBase {
     }
 
 
+    @Override
+    public ArrayList<String> searchLogs(int RideID) {
+        ArrayList<String>logs = new ArrayList<>();
+        try {
+            String query = "SELECT Log FROM Logs WHERE RideId = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,RideID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                logs.add(resultSet.getString("Log"));
+            }
+        }catch (Exception e){
+//            System.out.println("Ride Not found");
+            logs=null;
+        }
+        return logs;
+    }
+
     public static void main(String[] args) {
         Area source = new Area("a1");
         Area destination = new Area("b2");
@@ -552,17 +568,18 @@ public class DB_Helper implements IDataBase {
         db_helper.addArea(destination);
         db_helper.addArea(wrong);
         db_helper.addRide(ride);
-        db_helper.addRide(ride);
         db_helper.addNotification(new NewRideNotification(ride), captain);
         System.out.println(db_helper.rideCounter());
         // db_helper.addRide(ride);
         // Ride temp = db_helper.searchRide(ride.getID());
         // System.out.println(temp.toString());
 
-        // RideEvent rideEvent = new CustomerAcceptedEvent(ride);
-        // RideEvent rideEvent1 = new RideEndedEvent(ride);
-        // db_helper.saveEvent(rideEvent);
-        // db_helper.saveEvent(rideEvent1);
+         RideEvent rideEvent = new CustomerAcceptedEvent(ride);
+         RideEvent rideEvent1 = new RideEndedEvent(ride);
+         db_helper.saveEvent(rideEvent);
+         db_helper.saveEvent(rideEvent1);
+         db_helper.searchLogs(1);
+
 
         // db_helper.getEvent(ride);
     }
