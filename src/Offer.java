@@ -1,11 +1,25 @@
 public class Offer {
     private Captain captain;
     private double offeredPrice;
+    private Ride ride;
 
-    public Offer(Captain captain, double offeredPrice){
+
+    public Offer(Captain captain, double offeredPrice, Ride ride){
         this.captain = captain;
         this.offeredPrice = offeredPrice;
+        this.setRide(ride);
     }
+
+
+    public Ride getRide() {
+        return ride;
+    }
+
+
+    public void setRide(Ride ride) {
+        this.ride = ride;
+    }
+
 
     public Captain getDriver() {
         return captain;

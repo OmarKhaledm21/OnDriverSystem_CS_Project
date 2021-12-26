@@ -2,8 +2,6 @@ import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 
-import org.w3c.dom.events.Event;
-
 public class DB_Helper implements IDataBase {
     private static Connection connection;
     private final String url = "jdbc:sqlite:";
@@ -38,7 +36,7 @@ public class DB_Helper implements IDataBase {
                 "Status INT DEFAULT 0" +
                 ");";
 
-        String createDriverTable = "CREATE TABLE Drivers (" +
+        String createDriverTable = "CREATE TABLE Captain (" +
                 "UserName TEXT PRIMARY KEY," +
                 "NationalID TEXT NOT NULL," +
                 "LicenseNumber TEXT NOT NULL," +
@@ -58,7 +56,7 @@ public class DB_Helper implements IDataBase {
                 ");";
 
         String createRidesTable = "CREATE TABLE Rides(" +
-                "RideID INTEGER PRIMARY KEY," +
+                "RideID INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "Source TEXT NOT NULL," +
                 "Destination TEXT NOT NULL," +
                 "RideStatus TEXT NOT NULL," +
@@ -68,6 +66,8 @@ public class DB_Helper implements IDataBase {
                 "Rating INT DEFAULT 0," +
                 "FOREIGN KEY (CustomerUsername) REFERENCES Users (UserName)," +
                 "FOREIGN KEY (CaptainUsername) REFERENCES Users (UserName)" +
+                "FOREIGN KEY (Source) REFERENCES Rides (Location),"+
+                "FOREIGN KEY (Destination) REFERENCES Rides (Location)"+
                 ");";
 
         String createLogsTable = "CREATE TABLE Logs (" +
@@ -228,7 +228,7 @@ public class DB_Helper implements IDataBase {
                 String mobileNumber = userSet.getString("MobileNumber");
 
                 if (userType.equals("Captain")) {
-                    String driverQueryString = "SELECT * FROM Drivers WHERE UserName = ?";
+                    String driverQueryString = "SELECT * FROM Captain WHERE UserName = ?";
                     PreparedStatement driversQuery = connection.prepareStatement(driverQueryString);
 
                     driversQuery.setString(1, username);
@@ -255,7 +255,7 @@ public class DB_Helper implements IDataBase {
     }
 
     public boolean addToDriverTable(Captain driver) {
-        String query = "INSERT INTO Drivers(UserName,NationalId,LicenseNumber,AverageRating,CurrentLocation)" +
+        String query = "INSERT INTO Captain(UserName,NationalId,LicenseNumber,AverageRating,CurrentLocation)" +
                 "VALUES(?,?,?,?,?);";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -296,7 +296,7 @@ public class DB_Helper implements IDataBase {
     @Override
     public void updateCaptain(Captain captain) {
         // username national id lis avg rating
-        String updateQuery = "UPDATE Drivers SET NationalID = ?, LicenseNumber = ?, AverageRating = ? WHERE UserName = ?";
+        String updateQuery = "UPDATE Captain SET NationalID = ?, LicenseNumber = ?, AverageRating = ? WHERE UserName = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
 
@@ -440,7 +440,7 @@ public class DB_Helper implements IDataBase {
 
     @Override
     public void driverMoved(Captain captain) {
-        String query = "UPDATE Drivers SET CurrentLocation = ? WHERE UserName = ?";
+        String query = "UPDATE Captain SET CurrentLocation = ? WHERE UserName = ?";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -476,6 +476,7 @@ public class DB_Helper implements IDataBase {
                         rideEvent = new DriverArrivedEvent(ride);
                         break;
                     case "OfferPriceEvent": //TODO: attach offer to event
+                        
                         rideEvent = new OfferPriceEvent(ride, ride.getPriceOffers().get(ride.getPriceOffers().size() - 1));
                         break;
                     case "RideEndedEvent":
@@ -512,7 +513,7 @@ public class DB_Helper implements IDataBase {
     }
 
     ////////////////////////////// Notifs Controller ////////////////////////////////////////
-    @Override //TODO: add notifs ids to enable deleting
+    @Override 
     public void addNotification(Notification notification, Captain captain) {
         String addNotifQuery = "INSERT INTO Notifs (NotifType, CaptainUsername, RideID) VALUES(?, ?, ?)";
         try {
@@ -527,12 +528,53 @@ public class DB_Helper implements IDataBase {
         }
     }
 
-    ////////////////////////////// Offers Controller ////////////////////////////////////////
     @Override
-    public void addOffer(Offer offer) {
-        //TODO: add offer
+    public void deleteNotification(int notifId){
+        String deleteQuery = "DELETE FROM Notifs WHERE ID = ?";
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery);
+            preparedStatement.setInt(1, notifId);
+            preparedStatement.executeUpdate();
+        }
+        catch(Exception e){
+            System.out.println("Couldn't delete notification: " + e.getMessage());
+        }
     }
 
+    ////////////////////////////// Offers Controller ////////////////////////////////////////
+    @Override
+    public void addOffer(Offer offer){
+        String offerQuery = "INSERT INTO Offers (CaptainUsername, RideID, Price) VALUES(?, ?, ?)";
+        try{
+            PreparedStatement preparedStatement = connection.prepareStatement(offerQuery);
+            preparedStatement.setString(1, offer.getDriver().getUsername());
+            preparedStatement.setInt(2, offer.getRide().getID());
+            preparedStatement.setDouble(3, offer.getOfferedPrice());
+            preparedStatement.executeUpdate();
+        }catch(Exception e){
+            System.out.println("Coudn't add offer: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public ArrayList<Offer> getOffers(int rideId){
+        String offersQuery = "SELECT * FROM Offers WHERE RideID = " + rideId;
+        ArrayList<Offer> rideOffers = new ArrayList<>();
+        try{
+            ResultSet offers = statement.executeQuery(offersQuery);
+            while(offers.next()){
+                Captain captain = (Captain) search(offers.getString("CaptainUsername"));
+                Ride ride = searchRide(offers.getInt("RideID"));
+                double offeredPrice = offers.getDouble("Price");
+                Offer offer = new Offer(captain, offeredPrice, ride);
+                rideOffers.add(offer);
+            }
+        }catch(Exception e){
+            System.out.println("Couldn't get offers: " + e.getMessage());
+        }
+
+        return rideOffers;
+    }
 
     @Override
     public ArrayList<String> searchLogs(int RideID) {
@@ -561,6 +603,7 @@ public class DB_Helper implements IDataBase {
         Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1", destination, 1);
 
         Ride ride = Ride.createRide(customer, source, destination);
+        Offer offer = new Offer(captain, 0, ride);
         ride.setDriver(captain);
         db_helper.addUser(customer);
         db_helper.addUser(captain);
@@ -570,6 +613,9 @@ public class DB_Helper implements IDataBase {
         db_helper.addRide(ride);
         db_helper.addNotification(new NewRideNotification(ride), captain);
         System.out.println(db_helper.rideCounter());
+        db_helper.addOffer(offer);
+        System.out.println(db_helper.getOffers(1));
+        // db_helper.deleteNotification(1);
         // db_helper.addRide(ride);
         // Ride temp = db_helper.searchRide(ride.getID());
         // System.out.println(temp.toString());

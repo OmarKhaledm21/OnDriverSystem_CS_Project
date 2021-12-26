@@ -104,7 +104,7 @@ public class Captain extends User {
         System.out.println("Enter your offer: ");
         Scanner input = new Scanner(System.in);
         double price = input.nextDouble();
-        Offer offeredPrice = new Offer(this, price);
+        Offer offeredPrice = new Offer(this, price, ride);
         ride.addOffer(offeredPrice);
         OfferPriceEvent offerPriceEvent = new OfferPriceEvent(ride, offeredPrice);
         ride.addToEventLog(offerPriceEvent);

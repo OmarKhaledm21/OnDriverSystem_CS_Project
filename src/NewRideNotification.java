@@ -4,6 +4,10 @@ public class NewRideNotification extends Notification{
         super(ride);
     }
 
+    public NewRideNotification(Ride ride, int id) {
+        super(ride, id);
+    }
+
     @Override
     public String toString() {
         return "New ride notification\n" + this.getRide().toString();

@@ -1,36 +1,36 @@
 import java.util.*;
 
-public class OnDriverSystem implements IDataBase{
+public class OnDriverSystem implements IDataBase {
     private static OnDriverSystem onDriverSystem;
 
-    private Hashtable<String,User> userList;
-    private Hashtable<String,User> inActiveUsers;
+    private Hashtable<String, User> userList;
+    private Hashtable<String, User> inActiveUsers;
     private ArrayList<Area> areaList;
     private User currentUser;
     private static DB_Helper db;
 
-    private OnDriverSystem(){
-        userList = new Hashtable<String,User>();
-        inActiveUsers = new Hashtable<String,User>();
+    private OnDriverSystem() {
+        userList = new Hashtable<String, User>();
+        inActiveUsers = new Hashtable<String, User>();
         areaList = new ArrayList<>();
         currentUser = null;
         db = new DB_Helper();
-        this.userList.put("admin",new Admin("admin","admin","admin","admin"));
+        this.userList.put("admin", new Admin("admin", "admin", "admin", "admin"));
         populateLists();
     }
 
-    public static OnDriverSystem getSystem(){
-        if(onDriverSystem ==null){
+    public static OnDriverSystem getSystem() {
+        if (onDriverSystem == null) {
             onDriverSystem = new OnDriverSystem();
         }
         return onDriverSystem;
     }
 
-    public Hashtable<String,User>getInActiveUsers(){
+    public Hashtable<String, User> getInActiveUsers() {
         return inActiveUsers;
     }
 
-    public Hashtable<String,User>getUserList(){
+    public Hashtable<String, User> getUserList() {
         return userList;
     }
 
@@ -46,57 +46,56 @@ public class OnDriverSystem implements IDataBase{
         this.areaList = areaList;
     }
 
-    public void populateLists(){
+    public void populateLists() {
         ArrayList<User> db_instance = this.db.selectAll();
-        for (User user: db_instance) {
-            if(user.getStatus()==0){
-                this.inActiveUsers.put(user.getUsername(),user);
-            }else{
-                this.userList.put(user.getUsername(),user);
+        for (User user : db_instance) {
+            if (user.getStatus() == 0) {
+                this.inActiveUsers.put(user.getUsername(), user);
+            } else {
+                this.userList.put(user.getUsername(), user);
             }
         }
         rideCounter();
     }
 
-    public void rideCounter(){
-        Ride.ride_id= db.rideCounter();
+    public void rideCounter() {
+        Ride.ride_id = db.rideCounter();
     }
 
-    public User login(){
+    public User login() {
         Scanner user_input = new Scanner(System.in);
         System.out.println("Enter Username and Password Respectively: ");
-        String userName,password;
+        String userName, password;
         userName = user_input.next();
         password = user_input.next();
 
         User user = this.userList.get(userName);
 
-        if(user != null){
-            if(user.getPassword().equals(password)){
+        if (user != null) {
+            if (user.getPassword().equals(password)) {
                 this.currentUser = user;
                 System.out.println("Logged in!");
-            }else{
-                while (!user.getPassword().equals(password)){
+            } else {
+                while (!user.getPassword().equals(password)) {
                     System.out.println("Wrong password, please retype your password!");
                     password = user_input.next();
                 }
                 this.currentUser = user;
                 System.out.println("Logged in!");
             }
-        }else{
+        } else {
             System.out.println("User is not registered in the system!");
         }
         return this.currentUser;
     }
 
-    public void register(){
+    public void register() {
         Scanner user_input = new Scanner(System.in);
         System.out.println("Do you want to register as 1- Customer , 2- Driver");
-        int choice=0;
+        int choice = 0;
         while (true) {
             try {
                 choice = user_input.nextInt();
-
                 break;
             } catch (Exception e) {
                 System.out.println("Invalid choice");
@@ -107,48 +106,47 @@ public class OnDriverSystem implements IDataBase{
 
         User user;
         System.out.println("Enter Username, Mobile Number, Email and Password Respectively: ");
-        String userName,mobileNumber,email,password;
+        String userName, mobileNumber, email, password;
         userName = user_input.next();
         mobileNumber = user_input.next();
         email = user_input.next();
         password = user_input.next();
 
-        while (this.inActiveUsers.containsKey(userName) || this.userList.containsKey(userName)){
+        while (this.inActiveUsers.containsKey(userName) || this.userList.containsKey(userName)) {
             System.out.println("Username is already in use, Please type a new username");
             userName = user_input.next();
         }
 
         // TODO TEST OMAR ATEF
-        if(choice == 2) {
+        if (choice == 2) {
             System.out.println("Enter National ID, License Number: ");
             String nationalID = user_input.next();
             String licenseNumber = user_input.next();
-            user = new Captain(userName,password,email,mobileNumber,nationalID,licenseNumber,null,0);
-            this.inActiveUsers.put(userName,  user);
+            user = new Captain(userName, password, email, mobileNumber, nationalID, licenseNumber, null, 0);
+            this.inActiveUsers.put(userName, user);
             this.db.addUser(user);
-        }else{
-            user = new Customer(userName,password,email,mobileNumber,1);
-            this.userList.put(userName,user);
+        } else {
+            user = new Customer(userName, password, email, mobileNumber, 1);
+            this.userList.put(userName, user);
             this.db.addUser(user);
         }
 
         System.out.println("User registered successfully");
     }
 
-
-    public void newRideNotify(Ride ride){
-        for (String user_name : userList.keySet()){
+    public void newRideNotify(Ride ride) {
+        for (String user_name : userList.keySet()) {
             User current = userList.get(user_name);
-            if(current instanceof Captain){
+            if (current instanceof Captain) {
                 Captain captain = (Captain) current;
-                if(captain.getRide()==null){
-                    if(ride.getSource().isFavouriteDriver(captain)){
+                if (captain.getRide() == null) {
+                    if (ride.getSource().isFavouriteDriver(captain)) {
                         captain.notify(new FavAreaRideNotification(ride));
-                    }else{
+                    } else {
                         captain.notify(new NewRideNotification(ride));
                     }
                 }
-            }else{
+            } else {
                 continue;
             }
         }
@@ -218,7 +216,6 @@ public class OnDriverSystem implements IDataBase{
         return db.searchArea(location);
     }
 
-
     public void updateCaptain(Captain captain) {
         db.updateCaptain(captain);
     }
@@ -226,7 +223,7 @@ public class OnDriverSystem implements IDataBase{
     @Override
     public void addNotification(Notification notification, Captain captain) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -242,9 +239,18 @@ public class OnDriverSystem implements IDataBase{
     @Override
     public void addOffer(Offer offer) {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    @Override
+    public void deleteNotification(int notifId) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public ArrayList<Offer> getOffers(int rideId) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
-
-
-

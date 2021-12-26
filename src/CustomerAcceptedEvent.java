@@ -3,6 +3,7 @@ public class CustomerAcceptedEvent extends RideEvent {
     CustomerAcceptedEvent(Ride ride) {
         super(ride);
     }
+    
 
     @Override
     public String toString() {

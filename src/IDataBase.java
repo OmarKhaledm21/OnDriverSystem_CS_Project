@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public interface IDataBase {
     public boolean addUser(User user);
@@ -20,5 +19,7 @@ public interface IDataBase {
     public void addNotification(Notification notification, Captain captain);
     public void addOffer(Offer offer);
     public ArrayList<String> searchLogs(int RideID);
+    public void deleteNotification(int notifId);
+    public ArrayList<Offer> getOffers(int rideId);
 }
 
