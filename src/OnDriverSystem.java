@@ -234,12 +234,6 @@ public class OnDriverSystem implements IDataBase {
     }
 
     @Override
-    public void addNotification(Notification notification, Captain captain) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void driverMoved(Captain captain) {
         db.driverMoved(captain);
     }
@@ -250,25 +244,22 @@ public class OnDriverSystem implements IDataBase {
     }
 
     @Override
-    public void addOffer(Offer offer) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void deleteNotification(int notifId) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public ArrayList<Offer> getOffers(int rideId) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public ArrayList<Area> getAreas() {
         return db.getAreas();
+    }
+
+    @Override
+    public boolean isNewUser(String username) {
+        return db.isNewUser(username);
+    }
+
+    @Override
+    public void updateCustomerRides(String username) {
+        db.updateCustomerRides(username);
+    }
+
+    @Override
+    public double checkDiscount(String date) {
+        return db.checkDiscount(date);
     }
 }

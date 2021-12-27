@@ -7,9 +7,22 @@ public class Offer {
         this.captain = captain;
         this.offeredPrice = offeredPrice;
         this.setRide(ride);
+
+        double discounts = 0.0 ;
+
         if(this.ride.getDestination().getDiscount()!=0.0){
-            this.offeredPrice = offeredPrice * ( 1 - this.ride.getDestination().getDiscount() );
+            discounts+= this.ride.getDestination().getDiscount();
         }
+
+        if(this.getRide().getCustomer().isFirstRide()){
+            discounts+= 0.1 ;
+        }
+
+        if(this.getRide().getPassenger_number() >= 2){
+            discounts+= 0.05 ;
+        }
+
+        this.offeredPrice = offeredPrice* ( 1-discounts );
     }
 
     public Ride getRide() {

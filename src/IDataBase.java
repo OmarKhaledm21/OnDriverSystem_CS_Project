@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public interface IDataBase {
@@ -17,11 +16,10 @@ public interface IDataBase {
     public Area searchArea(String location);
     public void driverMoved(Captain captain);
     public void updateCaptain(Captain captain);
-    public void addNotification(Notification notification, Captain captain);
-    public void addOffer(Offer offer);
     public ArrayList<String> searchLogs(int RideID);
-    public void deleteNotification(int notifId);
-    public ArrayList<Offer> getOffers(int rideId);
     public ArrayList<Area> getAreas();
+    public void updateCustomerRides(String username);
+    public boolean isNewUser(String username);
+    public double checkDiscount(String date);
 }
 

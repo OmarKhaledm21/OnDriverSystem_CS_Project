@@ -13,8 +13,9 @@ public class Ride {
     private ArrayList<RideEvent> rideEvents;
     protected static int ride_id=0;
     private int rideID;
+    private int passenger_number;
 
-    public Ride(Customer customer, Area source, Area destination) {
+    public Ride(Customer customer, Area source, Area destination,int passenger_number) {
         rideEvents = new ArrayList<>();
 
         this.customer = customer;
@@ -26,14 +27,25 @@ public class Ride {
 
         this.priceOffers = new ArrayList<>();
         this.rideID=ride_id;
+
+        this.passenger_number= passenger_number;
     }
 
-    public static Ride createRide(Customer customer, Area source, Area destination){
+    public static Ride createRide(Customer customer, Area source, Area destination,int passenger_number){
         Ride.ride_id++;
-        return new Ride(customer, source, destination);
+        return new Ride(customer, source, destination,passenger_number);
     }
 
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
+
+
+    public int getPassenger_number() {
+        return passenger_number;
+    }
+
+    public void setPassenger_number(int passenger_number) {
+        this.passenger_number = passenger_number;
+    }
 
     public Customer getCustomer() {
         return customer;
@@ -138,7 +150,7 @@ public class Ride {
 
     @Override
     public String toString() {
-        return "Source Area: " + this.source.getLocation() + "\nDestination Area: " + this.destination.getLocation() + "\nStatus: " + this.rideStatus.toString();
+        return "Source Area: " + this.source.getLocation() + "\nDestination Area: " + this.destination.getLocation() + "\nStatus: " + this.rideStatus.toString()+" Number of passengers: "+passenger_number;
     }
 
     public void addToEventLog(RideEvent rideEvent) {

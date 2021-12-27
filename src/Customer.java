@@ -3,11 +3,21 @@ import java.util.Scanner;
 
 public class Customer extends User {
     private Ride ride;
+    private boolean isFirstRide;
 
     public Customer(String username, String password, String email, String mobileNumber, int status) {
         super(username, password, email, mobileNumber, status);
         this.status = status;
         ride = null;
+        this.isFirstRide = false;
+    }
+
+    public boolean isFirstRide() {
+        return OnDriverSystem.getSystem().isNewUser(this.getUsername());
+    }
+
+    public void setFirstRide(boolean firstRide) {
+        isFirstRide = firstRide;
     }
 
     public Ride getRide() {
@@ -31,6 +41,9 @@ public class Customer extends User {
             ArrayList<Area> areas = system.getAreaList();
             Scanner input = new Scanner(System.in);
 
+            System.out.println("Enter number of passengers: ");
+            int passenger_number = input.nextInt();
+
             System.out.println("Enter source and destination areas: ");
             String src = input.next(), dest = input.next();
             Area source = new Area(src), destination = new Area(dest);
@@ -52,7 +65,7 @@ public class Customer extends User {
                 System.out.println("This area has 10% discount applied!");
             }
 
-            this.ride = Ride.createRide(this, source, destination);
+            this.ride = Ride.createRide(this, source, destination,passenger_number);
 
             system.newRideNotify(this.ride);
             System.out.println("Ride is requested, waiting for offers from drivers!");
@@ -141,6 +154,7 @@ public class Customer extends User {
             System.out.println("You are not in a ride currently!");
         }
         ride = null;
+        OnDriverSystem.getSystem().updateCustomerRides(this.getUsername());
     }
 
     public void getCurrentRideStatus() {

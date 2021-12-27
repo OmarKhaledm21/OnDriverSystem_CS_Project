@@ -48,6 +48,7 @@ public class DB_Helper implements IDataBase {
 
         String createCustomerTable = "CREATE TABLE Customers (" +
                 "UserName TEXT PRIMARY KEY," +
+                "NewUser INT DEFAULT 1," +
                 "FOREIGN KEY (UserName) REFERENCES Users (UserName) ON DELETE CASCADE" +
                 ");";
 
@@ -64,6 +65,7 @@ public class DB_Helper implements IDataBase {
                 "CustomerUsername TEXT NOT NULL," +
                 "CaptainUsername TEXT NOT NULL," +
                 "Rating INT DEFAULT 0," +
+                "Passengers INT DEFAULT 1," +
                 "FOREIGN KEY (CustomerUsername) REFERENCES Users (UserName)," +
                 "FOREIGN KEY (CaptainUsername) REFERENCES Users (UserName)" +
                 "FOREIGN KEY (Source) REFERENCES Rides (Location),"+
@@ -75,24 +77,6 @@ public class DB_Helper implements IDataBase {
                 "EventTime TEXT," +
                 "Log TEXT NOT NULL," +
                 "RideID INT NOT NULL," +
-                "FOREIGN KEY (RideID) REFERENCES Rides (RideID)" +
-                ");";
-
-        String createOffersTable = "CREATE TABLE Offers(" +
-                "CaptainUsername TEXT NOT NULL," +
-                "RideID INT NOT NULL," +
-                "Price REAL," +
-                "FOREIGN KEY (RideID) REFERENCES Rides (RideID)," +
-                "FOREIGN KEY (CaptainUsername) REFERENCES Users (UserName)," +
-                "PRIMARY KEY (CaptainUsername, RideID)" +
-                ");";
-
-        String createNotificationsTable = "CREATE TABLE Notifs(" +
-                "ID INTEGER PRIMARY KEY," +
-                "NotifType TEXT," +
-                "CaptainUsername TEXT NOT NULL," +
-                "RideID INT," +
-                "FOREIGN KEY (CaptainUsername) REFERENCES Users (UserName)," +
                 "FOREIGN KEY (RideID) REFERENCES Rides (RideID)" +
                 ");";
 
@@ -114,6 +98,12 @@ public class DB_Helper implements IDataBase {
 
         String addAdmin = "INSERT INTO Admin (UserName) VALUES ('admin')";
 
+        String holidaysTable = "CREATE TABLE Holidays(" +
+                "MonthDay TEXT PRIMARY KEY," +
+                "Discount REAL DEFAULT 0.1" +
+                ");";
+
+        String insertHolidays = "INSERT INTO Holidays (MonthDay,Discount) VALUES ('25/12',0.1) ;";
         try {
             statement.execute(createUsersTable);
             statement.execute(createDriverTable);
@@ -124,9 +114,10 @@ public class DB_Helper implements IDataBase {
             statement.execute(createRidesTable);
             statement.execute(createLogsTable);
             statement.execute(areaTable);
-            statement.execute(createOffersTable);
-            statement.execute(createNotificationsTable);
             statement.execute(createFavArea);
+            statement.execute(holidaysTable);
+            statement.execute(insertHolidays);
+
         } catch (SQLException yeet) {
             yeet.printStackTrace();
         }
@@ -331,9 +322,9 @@ public class DB_Helper implements IDataBase {
     ////////////////////////////// Rides Controller ////////////////////////////////////////
     @Override
     public void addRide(Ride ride) {
-        String addRideQuery = "INSERT INTO Rides (Source,Destination,RideStatus,Price,CustomerUsername,CaptainUsername,Rating)"
+        String addRideQuery = "INSERT INTO Rides (Source,Destination,RideStatus,Price,CustomerUsername,CaptainUsername,Rating,Passengers)"
                 +
-                "VALUES(?,?,?,?,?,?,?);";
+                "VALUES(?,?,?,?,?,?,?,?);";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(addRideQuery);
             preparedStatement.setString(1, ride.getSource().getLocation());
@@ -343,6 +334,7 @@ public class DB_Helper implements IDataBase {
             preparedStatement.setString(5, ride.getCustomer().getUsername());
             preparedStatement.setString(6, ride.getDriver().getUsername());
             preparedStatement.setInt(7, ride.getRating());
+            preparedStatement.setInt(8,ride.getPassenger_number());
             preparedStatement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -363,7 +355,8 @@ public class DB_Helper implements IDataBase {
                 Captain tempCaptain = (Captain) search(resultSet.getString("CaptainUsername"));
                 Area tempSource = searchArea(resultSet.getString("Source"));
                 Area tempDestination = searchArea(resultSet.getString("Destination"));
-                res = new Ride(tempCustomer, tempSource, tempDestination);
+                int passenger_num = resultSet.getInt("Passengers");
+                res = new Ride(tempCustomer, tempSource, tempDestination,passenger_num);
             } else {
                 System.out.println("This ride doesn't exist!");
             }
@@ -513,70 +506,6 @@ public class DB_Helper implements IDataBase {
         }
     }
 
-    ////////////////////////////// Notifs Controller ////////////////////////////////////////
-    @Override 
-    public void addNotification(Notification notification, Captain captain) {
-        String addNotifQuery = "INSERT INTO Notifs (NotifType, CaptainUsername, RideID) VALUES(?, ?, ?)";
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(addNotifQuery);
-
-            preparedStatement.setString(1, notification.getClass().getName());
-            preparedStatement.setString(2, captain.getUsername());
-            preparedStatement.setInt(3, notification.getRide().getID());
-            preparedStatement.executeUpdate();
-        } catch (Exception e) {
-            System.out.println("Couldn't add notification: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void deleteNotification(int notifId){
-        String deleteQuery = "DELETE FROM Notifs WHERE ID = ?";
-        try{
-            PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery);
-            preparedStatement.setInt(1, notifId);
-            preparedStatement.executeUpdate();
-        }
-        catch(Exception e){
-            System.out.println("Couldn't delete notification: " + e.getMessage());
-        }
-    }
-
-    ////////////////////////////// Offers Controller ////////////////////////////////////////
-    @Override
-    public void addOffer(Offer offer){
-        String offerQuery = "INSERT INTO Offers (CaptainUsername, RideID, Price) VALUES(?, ?, ?)";
-        try{
-            PreparedStatement preparedStatement = connection.prepareStatement(offerQuery);
-            preparedStatement.setString(1, offer.getDriver().getUsername());
-            preparedStatement.setInt(2, offer.getRide().getID());
-            preparedStatement.setDouble(3, offer.getOfferedPrice());
-            preparedStatement.executeUpdate();
-        }catch(Exception e){
-            System.out.println("Coudn't add offer: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public ArrayList<Offer> getOffers(int rideId){
-        String offersQuery = "SELECT * FROM Offers WHERE RideID = " + rideId;
-        ArrayList<Offer> rideOffers = new ArrayList<>();
-        try{
-            ResultSet offers = statement.executeQuery(offersQuery);
-            while(offers.next()){
-                Captain captain = (Captain) search(offers.getString("CaptainUsername"));
-                Ride ride = searchRide(offers.getInt("RideID"));
-                double offeredPrice = offers.getDouble("Price");
-                Offer offer = new Offer(captain, offeredPrice, ride);
-                rideOffers.add(offer);
-            }
-        }catch(Exception e){
-            System.out.println("Couldn't get offers: " + e.getMessage());
-        }
-
-        return rideOffers;
-    }
-
     @Override
     public ArrayList<String> searchLogs(int RideID) {
         ArrayList<String>logs = new ArrayList<>();
@@ -611,12 +540,15 @@ public class DB_Helper implements IDataBase {
                 double price = resultSet.getDouble("Price");
                 Area source = searchArea( resultSet.getString("Source") );
                 Area destination = searchArea( resultSet.getString("Destination") );
-                ride = new Ride(customer,source,destination);
+                int passenger_number = resultSet.getInt("Passengers");
+                ride = new Ride(customer,source,destination,passenger_number);
                 ride.setRating(rating);
                 ride.setRideStatus(RideStatus.FINISHED);
                 ridesHistory.add(ride);
             }
-        }catch (Exception e){}
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return ridesHistory;
     }
 
@@ -636,6 +568,49 @@ public class DB_Helper implements IDataBase {
         return areas;
     }
 
+    @Override
+    public boolean isNewUser(String username) {
+        String query = "SELECT * FROM Customers WHERE UserName = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.getInt("NewUser") == 1;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public void updateCustomerRides(String username) {
+        String query = "UPDATE Customers SET NewUser = 0 WHERE UserName = ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,username);
+            preparedStatement.executeUpdate();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public double checkDiscount(String date) {
+        String query = "SELECT * FROM Holidays WHERE MonthDay = ?;";
+        double discount = 0.0;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,date);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                discount = resultSet.getDouble("Discount");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return discount;
+    }
+
     public static void main(String[] args) {
         Area source = new Area("a1");
         Area destination = new Area("b2");
@@ -644,7 +619,7 @@ public class DB_Helper implements IDataBase {
         Customer customer = new Customer("o1", "o1", "o1", "o1", 1);
         Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1", destination, 1);
 
-        Ride ride = Ride.createRide(customer, source, destination);
+        Ride ride = Ride.createRide(customer, source, destination,2);
         Offer offer = new Offer(captain, 0, ride);
         ride.setDriver(captain);
         db_helper.addUser(customer);
@@ -653,10 +628,8 @@ public class DB_Helper implements IDataBase {
         db_helper.addArea(destination);
         db_helper.addArea(wrong);
         db_helper.addRide(ride);
-        db_helper.addNotification(new NewRideNotification(ride), captain);
+
         System.out.println(db_helper.rideCounter());
-        db_helper.addOffer(offer);
-        System.out.println(db_helper.getOffers(1));
         // db_helper.deleteNotification(1);
         // db_helper.addRide(ride);
         // Ride temp = db_helper.searchRide(ride.getID());
