@@ -29,7 +29,7 @@ public class DB_Helper implements IDataBase {
         String createUsersTable = "CREATE TABLE Users (" +
                 "UserName TEXT PRIMARY KEY," +
                 "PassWord TEXT NOT NULL," +
-                "BirthDate DATE," +
+                "BirthDate TEXT," +
                 "Email TEXT NOT NULL," +
                 "MobileNumber TEXT NOT NULL," +
                 "Type TEXT CHECK (Type IN ('Captain','Customer','Admin')) NOT NULL DEFAULT 'Customer'," +
@@ -149,7 +149,7 @@ public class DB_Helper implements IDataBase {
             PreparedStatement preparedStatement = connection.prepareStatement(addQuery);
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setDate(3, user.getBirthDay());
+            preparedStatement.setString(3, user.getBirthDay());
             preparedStatement.setString(4, user.getEmail());
             preparedStatement.setString(5, user.getMobileNumber());
             preparedStatement.setString(6, userType);
@@ -217,6 +217,7 @@ public class DB_Helper implements IDataBase {
                 String password = userSet.getString("PassWord");
                 String email = userSet.getString("Email");
                 String mobileNumber = userSet.getString("MobileNumber");
+                String birthday = userSet.getString("BirthDate");
 
                 if (userType.equals("Captain")) {
                     String driverQueryString = "SELECT * FROM Captain WHERE UserName = ?";
@@ -232,7 +233,7 @@ public class DB_Helper implements IDataBase {
                     user = new Captain(username, password, email, mobileNumber, nationalID, licenseNumber, currLocation, userStatus);
 
                 } else if (userType.equals("Customer")) {
-                    user = new Customer(username, password, email, mobileNumber, userStatus);
+                    user = new Customer(username, password, email, mobileNumber, userStatus, birthday);
                 } else if (userType.equals("Admin")) {
                     user = new Admin(username, password, email, mobileNumber);
                 }
@@ -595,7 +596,7 @@ public class DB_Helper implements IDataBase {
     }
 
     @Override
-    public double checkDiscount(String date) {
+    public double checkHoliday(String date) {
         String query = "SELECT * FROM Holidays WHERE MonthDay = ?;";
         double discount = 0.0;
         try {
@@ -616,7 +617,7 @@ public class DB_Helper implements IDataBase {
         Area destination = new Area("b2");
         Area wrong = new Area("a1");
         DB_Helper db_helper = new DB_Helper();
-        Customer customer = new Customer("o1", "o1", "o1", "o1", 1);
+        Customer customer = new Customer("o1", "o1", "o1", "o1", 1, "25/12");
         Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1", destination, 1);
 
         Ride ride = Ride.createRide(customer, source, destination,2);

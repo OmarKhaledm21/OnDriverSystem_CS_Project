@@ -20,6 +20,6 @@ public interface IDataBase {
     public ArrayList<Area> getAreas();
     public void updateCustomerRides(String username);
     public boolean isNewUser(String username);
-    public double checkDiscount(String date);
+    public double checkHoliday(String date);
 }
 

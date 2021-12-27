@@ -23,7 +23,7 @@ public class Captain extends User {
     }
 
     public Captain(String username, String password, String email, String mobileNumber, String nationalID, String licenseNumber, Area currentLocation, int status) {
-        super(username, password, email, mobileNumber, status);
+        super(username, password, email, mobileNumber, status, "");
         this.nationalID = nationalID;
         this.licenseNumber = licenseNumber;
         this.averageRating = 0.0;

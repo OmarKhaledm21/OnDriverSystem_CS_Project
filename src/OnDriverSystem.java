@@ -8,6 +8,7 @@ public class OnDriverSystem implements IDataBase {
     private ArrayList<Area> areaList;
     private User currentUser;
     private static DB_Helper db;
+    private String currentDate;
 
     private OnDriverSystem() {
         userList = new Hashtable<String, User>();
@@ -17,6 +18,17 @@ public class OnDriverSystem implements IDataBase {
         db = new DB_Helper();
         this.userList.put("admin", new Admin("admin", "admin", "admin", "admin"));
         populateLists();
+        System.out.println("Enter date plz");
+        Scanner scan = new Scanner(System.in);
+        this.setCurrentDate(scan.nextLine());
+    }
+
+    public String getCurrentDate() {
+        return currentDate;
+    }
+
+    public void setCurrentDate(String currentDate) {
+        this.currentDate = currentDate;
     }
 
     public static OnDriverSystem getSystem() {
@@ -118,12 +130,13 @@ public class OnDriverSystem implements IDataBase {
         }
 
         User user;
-        System.out.println("Enter Username, Mobile Number, Email and Password Respectively: ");
-        String userName, mobileNumber, email, password;
+        System.out.println("Enter Username, Mobile Number, Email, Password and birthday (DD/MM) Respectively: ");
+        String userName, mobileNumber, email, password, birthDay;
         userName = user_input.next();
         mobileNumber = user_input.next();
         email = user_input.next();
         password = user_input.next();
+        birthDay = user_input.next();
 
         while (this.inActiveUsers.containsKey(userName) || this.userList.containsKey(userName)) {
             System.out.println("Username is already in use, Please type a new username");
@@ -139,7 +152,7 @@ public class OnDriverSystem implements IDataBase {
             this.inActiveUsers.put(userName, user);
             this.db.addUser(user);
         } else {
-            user = new Customer(userName, password, email, mobileNumber, 1);
+            user = new Customer(userName, password, email, mobileNumber, 1, birthDay);
             this.userList.put(userName, user);
             this.db.addUser(user);
         }
@@ -259,7 +272,7 @@ public class OnDriverSystem implements IDataBase {
     }
 
     @Override
-    public double checkDiscount(String date) {
-        return db.checkDiscount(date);
+    public double checkHoliday(String date) {
+        return db.checkHoliday(date);
     }
 }

@@ -5,8 +5,8 @@ public class Customer extends User {
     private Ride ride;
     private boolean isFirstRide;
 
-    public Customer(String username, String password, String email, String mobileNumber, int status) {
-        super(username, password, email, mobileNumber, status);
+    public Customer(String username, String password, String email, String mobileNumber, int status, String date) {
+        super(username, password, email, mobileNumber, status, date);
         this.status = status;
         ride = null;
         this.isFirstRide = false;

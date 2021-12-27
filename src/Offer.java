@@ -22,6 +22,14 @@ public class Offer {
             discounts+= 0.05 ;
         }
 
+        OnDriverSystem system = OnDriverSystem.getSystem();
+        
+        discounts += system.checkHoliday(system.getCurrentDate());
+
+        if(this.getRide().getCustomer().getBirthDay().equals(system.getCurrentDate())){
+            discounts += 0.1;
+        }
+
         this.offeredPrice = offeredPrice* ( 1-discounts );
     }
 

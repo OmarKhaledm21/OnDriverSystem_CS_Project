@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Admin extends User {
     public Admin(String username, String password, String email, String mobileNumber) {
-        super(username, password, email, mobileNumber, 1);
+        super(username, password, email, mobileNumber, 1, "");
     }
 
     public void setDiscount(String location){

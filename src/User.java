@@ -1,9 +1,7 @@
-import java.sql.Date;
-
 public abstract class User {
     private String username;
     private String password;
-    private Date birthDay;
+    private String birthDay;
     private String email;
     private String mobileNumber;
     protected int status;
@@ -16,12 +14,12 @@ public abstract class User {
         this.status=0;
     }
 
-    public User(String username,String password,String email,String mobileNumber,int status){
+    public User(String username,String password,String email,String mobileNumber,int status, String date){
         this.username = username;
         this.password = password;
         this.email = email;
         this.mobileNumber = mobileNumber;
-        this.birthDay = null;
+        this.birthDay = date;
         this.status = status;
     }
 
@@ -59,11 +57,11 @@ public abstract class User {
         this.mobileNumber = mobileNumber;
     }
 
-    public Date getBirthDay() {
+    public String getBirthDay() {
         return birthDay;
     }
 
-    public void setBirthDay(Date birthDay) {
+    public void setBirthDay(String birthDay) {
         this.birthDay = birthDay;
     }
 
