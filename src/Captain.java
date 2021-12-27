@@ -7,6 +7,7 @@ public class Captain extends User {
     private double averageRating;
     private ArrayList<Notification> notificationList;
     private Ride ride;
+
     private ArrayList<Ride> ridesHistory;
     private Area currentLocation;
 
@@ -29,7 +30,7 @@ public class Captain extends User {
         this.notificationList = new ArrayList<>();
         this.ride = null;
         this.ridesHistory = new ArrayList<>();
-        this.currentLocation = currentLocation;
+        this.currentLocation = new Area("default");
     }
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
     @Override
@@ -41,6 +42,10 @@ public class Captain extends User {
                 ", Mobile Number: " + this.getMobileNumber() +
                 ", Email: " + this.getEmail() +
                 ", Current Location: " + this.getCurrentLocation();
+    }
+
+    public void setRidesHistory(ArrayList<Ride>ridesHistory){
+        this.ridesHistory = ridesHistory;
     }
 
     public String getNationalID() {
@@ -116,6 +121,8 @@ public class Captain extends User {
                 this.ride.setDriver(this);
         }else {
                 if (notification instanceof FinishedRideNotification) {
+                    this.currentLocation = ride.getDestination();
+                    OnDriverSystem.getSystem().driverMoved(this);
                     this.ridesHistory.add(ride);
                     setAverageRating();
                     this.ride = null;
@@ -166,7 +173,7 @@ public class Captain extends User {
         }
     }
 
-
+//TODO DBBBB
     public void addFavouriteArea() {
         Scanner input = new Scanner(System.in);
         System.out.print("Enter area name: ");

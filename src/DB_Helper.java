@@ -393,13 +393,14 @@ public class DB_Helper implements IDataBase {
 
     @Override
     public void changeRideStatus(Ride ride) {
-        String updateStatus = "UPDATE Rides SET RideStatus = ? , Rating = ? WHERE CustomerUsername = ? AND RideID = ?;";
+        String updateStatus = "UPDATE Rides SET RideStatus = ? , Rating = ? , Price = ? WHERE CustomerUsername = ? AND RideID = ?;";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(updateStatus);
             preparedStatement.setString(1, ride.getRideStatus().toString());
             preparedStatement.setInt(2, ride.getRating());
-            preparedStatement.setString(3, ride.getCustomer().getUsername());
-            preparedStatement.setInt(4, ride.getID());
+            preparedStatement.setDouble(3,ride.getPrice());
+            preparedStatement.setString(4, ride.getCustomer().getUsername());
+            preparedStatement.setInt(5, ride.getID());
             preparedStatement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -592,6 +593,47 @@ public class DB_Helper implements IDataBase {
             logs=null;
         }
         return logs;
+    }
+
+    public ArrayList<Ride> getRidesHistory(User user){
+        String historyQuery = "SELECT * FROM Rides WHERE CaptainUsername = ?;";
+        ArrayList<Ride> ridesHistory = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(historyQuery);
+            preparedStatement.setString(1,user.getUsername());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                Ride ride = null;
+                Customer customer = (Customer) search(resultSet.getString("CustomerUsername"));
+                Captain captain = (Captain) user;
+                int rating = resultSet.getInt("Rating");
+                double price = resultSet.getDouble("Price");
+                Area source = searchArea( resultSet.getString("Source") );
+                Area destination = searchArea( resultSet.getString("Destination") );
+                ride = new Ride(customer,source,destination);
+                ride.setRating(rating);
+                ride.setRideStatus(RideStatus.FINISHED);
+                ridesHistory.add(ride);
+            }
+        }catch (Exception e){}
+        return ridesHistory;
+    }
+
+    @Override
+    public ArrayList<Area> getAreas() {
+        String query = "SELECT * FROM Areas;";
+        ArrayList<Area> areas = new ArrayList<>();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                Area area = new Area(resultSet.getString("Location"));
+                areas.add(area);
+            }
+        }catch (Exception e){}
+
+        return areas;
     }
 
     public static void main(String[] args) {

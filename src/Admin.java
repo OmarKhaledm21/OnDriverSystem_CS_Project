@@ -7,6 +7,19 @@ public class Admin extends User {
         super(username, password, email, mobileNumber, 1);
     }
 
+    public void setDiscount(String location){
+        ArrayList<Area> areas = OnDriverSystem.getSystem().getAreaList();
+        if(areas!=null){
+            for (Area area: areas) {
+                if(area.getLocation().equals(location)){
+                    area.setDiscount(0.1);
+                }
+            }
+        }else{
+            System.out.println("Area not found in system!");
+        }
+    }
+
     public void verifyRegistration() {
         OnDriverSystem system = OnDriverSystem.getSystem();
         Hashtable<String, User> inActive = system.getInActiveUsers();
@@ -146,7 +159,7 @@ public class Admin extends User {
         Scanner in = new Scanner(System.in);
         while (choice != 0) {
             System.out.println("Welcome " + this.getUsername() + " there is your menu \n" +
-                    "1- List Active Users\n2- List inActive Users\n3- Suspend User\n4- Verify Registration\n5. View Logs\n0- Exit");
+                    "1- List Active Users\n2- List inActive Users\n3- Suspend User\n4- Verify Registration\n5. View Logs\n6. Set discount\n0- Exit");
             choice = in.nextInt();
             switch (choice) {
                 case 0:
@@ -168,41 +181,15 @@ public class Admin extends User {
                     int RideID = in.nextInt();
                     getLogs(RideID);
                     break;
+                case 6:
+                    String location = in.next();
+                    setDiscount(location);
+                    break;
                 default:
                     System.out.println("Invalid Choice");
                     break;
             }
         }
 
-    }
-
-    public static void main(String[] args) {
-        OnDriverSystem system = OnDriverSystem.getSystem();
-        Area source = new Area("a1");
-        Area destination = new Area("a2");
-        Customer customer = new Customer("o1", "o1", "o1", "o1", 1);
-        Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1", source, 1);
-
-        Ride ride = Ride.createRide(customer, source, destination);
-        ride.setDriver(captain);
-        captain.setRide(ride);
-        customer.setRide(ride);
-        system.addUser(customer);
-        system.addUser(captain);
-        system.addArea(source);
-        system.addArea(destination);
-        system.addRide(ride);
-        Ride temp = system.searchRide(ride.getID());
-        //System.out.println(temp.toString());
-
-        RideEvent rideEvent = new CustomerAcceptedEvent(ride);
-        RideEvent rideEvent1 = new RideEndedEvent(ride);
-        system.saveEvent(rideEvent);
-        system.saveEvent(rideEvent1);
-
-        //system.getEvent(ride);
-
-        Admin admin = new Admin("a", "a", "a", "a");
-        admin.listRideLogs(ride.getID());
     }
 }

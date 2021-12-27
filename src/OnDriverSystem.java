@@ -51,11 +51,24 @@ public class OnDriverSystem implements IDataBase {
         for (User user : db_instance) {
             if (user.getStatus() == 0) {
                 this.inActiveUsers.put(user.getUsername(), user);
+
+                if(db.search(user.getUsername()) instanceof Captain){
+                    Captain captain = (Captain) user;
+                    ((Captain) user).setRidesHistory( db.getRidesHistory(captain) );
+                }
+
             } else {
                 this.userList.put(user.getUsername(), user);
+
+                if(db.search(user.getUsername()) instanceof Captain){
+                    Captain captain = (Captain) user;
+                    ((Captain) user).setRidesHistory( db.getRidesHistory(captain) );
+                }
             }
         }
         rideCounter();
+
+        this.areaList = getAreas();
     }
 
     public void rideCounter() {
@@ -252,5 +265,10 @@ public class OnDriverSystem implements IDataBase {
     public ArrayList<Offer> getOffers(int rideId) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public ArrayList<Area> getAreas() {
+        return db.getAreas();
     }
 }

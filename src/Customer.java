@@ -24,28 +24,40 @@ public class Customer extends User {
     }
 
     public void requestRide() {
-        OnDriverSystem system = OnDriverSystem.getSystem();
-        ArrayList<Area> areas = system.getAreaList();
-        Scanner input = new Scanner(System.in);
+        if (this.ride != null) {
+            System.out.println("You are already in a ride!");
+        } else {
+            OnDriverSystem system = OnDriverSystem.getSystem();
+            ArrayList<Area> areas = system.getAreaList();
+            Scanner input = new Scanner(System.in);
 
-        System.out.println("Enter source and destination areas: ");
-        String src = input.next(), dest = input.next();
-        Area source = new Area(src), destination = new Area(dest);
-        OnDriverSystem.getSystem().addArea(source);
-        OnDriverSystem.getSystem().addArea(destination);
+            System.out.println("Enter source and destination areas: ");
+            String src = input.next(), dest = input.next();
+            Area source = new Area(src), destination = new Area(dest);
+            OnDriverSystem.getSystem().addArea(source);
+            OnDriverSystem.getSystem().addArea(destination);
 
-        if (areas != null) {
-            for (Area area : areas) {
-                if (area.getLocation().equals(src)) {
-                    source = area;
+            if (areas != null) {
+                for (Area area : areas) {
+                    if (area.getLocation().equals(src)) {
+                        source = area;
+                    }
+                    if(area.getLocation().equals(dest)){
+                        destination = area;
+                    }
                 }
             }
+
+            if(destination.getDiscount() != 0.0){
+                System.out.println("This area has 10% discount applied!");
+            }
+
+            this.ride = Ride.createRide(this, source, destination);
+
+            system.newRideNotify(this.ride);
+            System.out.println("Ride is requested, waiting for offers from drivers!");
+
         }
-
-        this.ride = Ride.createRide(this, source, destination);
-
-        system.newRideNotify(this.ride);
-        System.out.println("Ride is requested, waiting for offers from drivers!");
     }
 
     public void rateRide() {
@@ -74,28 +86,30 @@ public class Customer extends User {
         Scanner input = new Scanner(System.in);
         ArrayList<Offer> offers = this.ride.getPriceOffers();
 
-        if (offers.size() > 0) {
+        if (offers.size() > 0 && offers!= null) {
             for (int i = 0; i < offers.size(); i++) {
                 System.out.println(i + 1 + ". " + offers.get(i).toString());
+                //TODO GET RATING FROM DB
                 System.out.println("Average Rating: " + offers.get(i).getDriver().getAverageRating());
             }
             System.out.println("Type the number of offer you would like to accept or -1 for exit : ");
             int choice = input.nextInt();
             if (choice >= 0 && choice <= offers.size()) {
+
                 Offer acceptedOffer = offers.get(choice - 1);
+
                 acceptedOffer.getDriver().notify(new CustomerAcceptedRideNotification(this.ride));
                 CustomerAcceptedEvent customerAcceptedEvent = new CustomerAcceptedEvent(this.ride);
+
                 this.ride.addToEventLog(customerAcceptedEvent);
-                this.ride.setRideStatus(RideStatus.IN_PROGRESS);
+                //this.ride.setRideStatus(RideStatus.IN_PROGRESS);
+
+                this.ride.acceptOffer(acceptedOffer);
+
                 OnDriverSystem.getSystem().changeRideStatus(this.ride);
                 OnDriverSystem.getSystem().addRide(this.ride);
 
-                //TODO TODO TODO TODO TODO 3SHAN LESA FAKEEEEE ZY EL EX
-//                DriverArrivedEvent driverArrivedEvent = new DriverArrivedEvent(this.ride);
-//                this.ride.addToEventLog(driverArrivedEvent);
-                //TODO TODO TODO TODO TODO ELY FO2 DA FAKEE ZY EL EX
-
-                this.ride.setRideStatus(RideStatus.IN_PROGRESS);
+                //this.ride.setRideStatus(RideStatus.IN_PROGRESS);
             } else if (choice == -1) {
                 System.out.println("Back to menu!");
             } else {
@@ -113,10 +127,13 @@ public class Customer extends User {
                 System.out.println("Ride cancelled");
             } else {
                 this.ride.setRideStatus(RideStatus.FINISHED);
+
                 System.out.println("Rate the ride: ");
                 rateRide();
+
                 this.ride.getDriver().notify(new FinishedRideNotification(this.ride));
                 RideEndedEvent rideEndedEvent = new RideEndedEvent(this.ride);
+
                 this.ride.addToEventLog(rideEndedEvent);
                 OnDriverSystem.getSystem().changeRideStatus(this.ride);
             }

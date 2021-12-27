@@ -131,6 +131,7 @@ public class Ride {
     public void acceptOffer(Offer offer) {
         this.captain = offer.getDriver();
         this.price = offer.getOfferedPrice();
+
         this.priceOffers = null;
         this.rideStatus = RideStatus.IN_PROGRESS;
     }
@@ -143,7 +144,6 @@ public class Ride {
     public void addToEventLog(RideEvent rideEvent) {
         OnDriverSystem system = OnDriverSystem.getSystem();
         system.saveEvent(rideEvent);
-        // TODO TODO TODO TODO TODO TODO TODO TODO TODO
         rideEvents.add(rideEvent);
     }
 }

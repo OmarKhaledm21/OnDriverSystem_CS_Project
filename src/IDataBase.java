@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public interface IDataBase {
@@ -21,5 +22,6 @@ public interface IDataBase {
     public ArrayList<String> searchLogs(int RideID);
     public void deleteNotification(int notifId);
     public ArrayList<Offer> getOffers(int rideId);
+    public ArrayList<Area> getAreas();
 }
 
