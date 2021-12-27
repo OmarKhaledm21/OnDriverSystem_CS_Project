@@ -100,10 +100,10 @@ public class DB_Helper implements IDataBase {
 
         String holidaysTable = "CREATE TABLE Holidays(" +
                 "MonthDay TEXT PRIMARY KEY," +
-                "Discount REAL DEFAULT 0.1" +
+                "Discount REAL DEFAULT 0.05" +
                 ");";
 
-        String insertHolidays = "INSERT INTO Holidays (MonthDay,Discount) VALUES ('25/12',0.1) ;";
+        String insertHolidays = "INSERT INTO Holidays (MonthDay,Discount) VALUES ('25/12',0.05) ;";
         try {
             statement.execute(createUsersTable);
             statement.execute(createDriverTable);
