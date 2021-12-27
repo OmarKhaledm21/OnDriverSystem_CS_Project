@@ -168,7 +168,7 @@ public class OnDriverSystem implements IDataBase {
                 if (captain.getRide() == null) {
                     if (ride.getSource().isFavouriteDriver(captain)) {
                         captain.notify(new FavAreaRideNotification(ride));
-                    } else {
+                    } else if(captain.getCurrentLocation().getLocation().equals(ride.getSource().getLocation())){
                         captain.notify(new NewRideNotification(ride));
                     }
                 }

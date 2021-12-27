@@ -30,7 +30,7 @@ public class Captain extends User {
         this.notificationList = new ArrayList<>();
         this.ride = null;
         this.ridesHistory = new ArrayList<>();
-        this.currentLocation = new Area("default");
+        this.currentLocation = new Area("a1");
     }
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
     @Override
