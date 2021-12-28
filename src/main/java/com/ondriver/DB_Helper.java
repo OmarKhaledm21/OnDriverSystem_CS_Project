@@ -1,4 +1,6 @@
 package com.ondriver;
+import org.springframework.stereotype.Repository;
+
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
@@ -146,7 +148,7 @@ public class DB_Helper implements IDataBase {
     public boolean addUser(User user) {
         String addQuery = "INSERT INTO Users(UserName, PassWord, BirthDate, Email, MobileNumber, Type, Status) VALUES (?, ?, ?, ?, ?, ?, ?);";
         try {
-            String userType = user.getClass().getName();
+            String userType = user.getClass().getSimpleName();
             PreparedStatement preparedStatement = connection.prepareStatement(addQuery);
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
