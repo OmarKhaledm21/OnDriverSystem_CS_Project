@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 public interface IDataBase {
+    public ArrayList<User> selectAll();
     public boolean addUser(User user);
     public boolean activateUser(User user);
     public boolean deleteUser(User user);

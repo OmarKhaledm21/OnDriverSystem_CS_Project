@@ -88,6 +88,7 @@ public class OnDriverSystem implements IDataBase {
     }
 
     public User login() {
+        this.currentUser=null;
         Scanner user_input = new Scanner(System.in);
         System.out.println("Enter Username and Password Respectively: ");
         String userName, password;
@@ -115,6 +116,7 @@ public class OnDriverSystem implements IDataBase {
     }
 
     public void register() {
+        this.currentUser=null;
         Scanner user_input = new Scanner(System.in);
         System.out.println("Do you want to register as 1- Customer , 2- Driver");
         int choice = 0;
@@ -274,5 +276,10 @@ public class OnDriverSystem implements IDataBase {
     @Override
     public double checkHoliday(String date) {
         return db.checkHoliday(date);
+    }
+
+    @Override
+    public ArrayList<User> selectAll() {
+        return db.selectAll();
     }
 }
