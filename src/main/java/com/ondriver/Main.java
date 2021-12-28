@@ -1,9 +1,12 @@
 package com.ondriver;
+import com.ondriver.api.ApiController;
+
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         OnDriverSystem system = OnDriverSystem.getSystem();
+        system.setDB(new ApiController());
         Scanner input = new Scanner(System.in);
 
         Main.menu();

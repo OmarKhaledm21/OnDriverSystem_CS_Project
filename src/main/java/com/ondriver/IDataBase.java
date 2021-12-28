@@ -2,7 +2,9 @@ package com.ondriver;
 import java.util.ArrayList;
 
 public interface IDataBase {
+    public ArrayList<Ride> getRidesHistory(User user);
     public ArrayList<User> selectAll();
+    public int rideCounter();
     public boolean addUser(User user);
     public boolean activateUser(User user);
     public boolean deleteUser(User user);

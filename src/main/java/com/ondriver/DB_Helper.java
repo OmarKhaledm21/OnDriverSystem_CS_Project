@@ -11,7 +11,7 @@ public class DB_Helper implements IDataBase {
     private final String dbPath = "db/OnDriver.db";
     private static Statement statement;
 
-    DB_Helper() {
+    public DB_Helper() {
         try {
             File file = new File(this.dbPath);
             boolean exist = file.exists();
@@ -21,8 +21,6 @@ public class DB_Helper implements IDataBase {
                 CreateDB();
                 System.out.println("Database Created.");
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -385,7 +383,6 @@ public class DB_Helper implements IDataBase {
             e.printStackTrace();
         }
         return counter;
-
     }
 
     @Override

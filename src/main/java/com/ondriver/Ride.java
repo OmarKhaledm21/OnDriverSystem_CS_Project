@@ -38,7 +38,9 @@ public class Ride {
     }
 
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
-
+    public static void setRide_id(int ride_id){
+        Ride.ride_id = ride_id;
+    }
 
     public int getPassenger_number() {
         return passenger_number;

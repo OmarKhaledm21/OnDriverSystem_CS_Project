@@ -10,7 +10,7 @@ public class OnDriverSystem implements IDataBase {
     private Hashtable<String, User> inActiveUsers;
     private ArrayList<Area> areaList;
     private User currentUser;
-    private static DB_Helper db;
+    private static IDataBase db;
     private String currentDate;
 
     private OnDriverSystem() {
@@ -19,12 +19,15 @@ public class OnDriverSystem implements IDataBase {
         inActiveUsers = new Hashtable<String, User>();
         areaList = new ArrayList<>();
         currentUser = null;
-        db = new DB_Helper();
         this.userList.put("admin", new Admin("admin", "admin", "admin", "admin"));
-        populateLists();
         System.out.println("Enter date plz");
         Scanner scan = new Scanner(System.in);
         this.setCurrentDate(scan.nextLine());
+    }
+
+    public void setDB(IDataBase db){
+        OnDriverSystem.db = db;
+        populateLists();
     }
 
     public String getCurrentDate() {
@@ -87,8 +90,10 @@ public class OnDriverSystem implements IDataBase {
         this.areaList = getAreas();
     }
 
-    public void rideCounter() {
+    @Override
+    public int rideCounter() {
         Ride.ride_id = db.rideCounter();
+        return 0;
     }
 
     public User login() {
@@ -285,5 +290,10 @@ public class OnDriverSystem implements IDataBase {
     @Override
     public ArrayList<User> selectAll() {
         return db.selectAll();
+    }
+
+    @Override
+    public ArrayList<Ride> getRidesHistory(User user) {
+        return db.getRidesHistory(user);
     }
 }
