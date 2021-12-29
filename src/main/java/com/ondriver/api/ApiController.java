@@ -155,7 +155,7 @@ public class ApiController implements IDataBase {
     }
 
     @GetMapping(path = "/getRidesHistory/{username}")
-    public ArrayList<Ride> getRidesHistory(String username) {
+    public ArrayList<Ride> getRidesHistory(@PathVariable String username) {
         User user = search(username);
         return this.getRidesHistory(user);
     }

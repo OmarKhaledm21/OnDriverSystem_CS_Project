@@ -26,7 +26,7 @@ public class Captain extends User {
         nationalID = "";
         licenseNumber = "";
         this.status = 0;
-        currentLocation = null;
+        currentLocation = new Area("a1");
     }
 
     @Autowired
@@ -45,7 +45,11 @@ public class Captain extends User {
         this.notificationList = new ArrayList<>();
         this.ride = null;
         this.ridesHistory = new ArrayList<>();
-        this.currentLocation = currentLocation;
+        if(currentLocation == null){
+            this.currentLocation = new Area("a1");
+        }else {
+            this.currentLocation = currentLocation;
+        }
     }
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
     @Override

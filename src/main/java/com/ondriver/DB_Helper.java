@@ -288,6 +288,7 @@ public class DB_Helper implements IDataBase {
             preparedStatement.executeUpdate();
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Driver Not Added.."); // Just for Debugging
             return false;
         }

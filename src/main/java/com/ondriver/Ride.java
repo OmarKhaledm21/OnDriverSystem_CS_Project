@@ -1,4 +1,6 @@
 package com.ondriver;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -16,7 +18,10 @@ public class Ride {
     private int rideID;
     private int passenger_number;
 
-    public Ride(Customer customer, Area source, Area destination,int passenger_number) {
+    public Ride(@JsonProperty("customer") Customer customer,
+                @JsonProperty("source") Area source,
+                @JsonProperty("destination") Area destination,
+                @JsonProperty("passenger_number") int passenger_number) {
         rideEvents = new ArrayList<>();
 
         this.customer = customer;
