@@ -296,4 +296,9 @@ public class OnDriverSystem implements IDataBase {
     public ArrayList<Ride> getRidesHistory(User user) {
         return db.getRidesHistory(user);
     }
+
+    @Override
+    public boolean addHoliday(String date) {
+        return db.addHoliday(date);
+    }
 }

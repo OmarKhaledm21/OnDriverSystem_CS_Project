@@ -1,4 +1,5 @@
 package com.ondriver.api;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ondriver.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -122,6 +123,7 @@ public class ApiController implements IDataBase {
     }
 
     @Override
+    @GetMapping(path = "/getAreas")
     public ArrayList<Area> getAreas() {
         return db.getAreas();
     }
@@ -132,8 +134,14 @@ public class ApiController implements IDataBase {
     }
 
     @Override
-    public void updateCustomerRides(String username) {
+    @PostMapping(path = "/updateCustomerRides/{username}")
+    public void updateCustomerRides(@PathVariable String username) {
         db.updateCustomerRides(username);
+    }
+
+    @Override
+    public boolean addHoliday(@PathVariable String date) {
+        return db.addHoliday(date);
     }
 
     @Override
@@ -144,6 +152,12 @@ public class ApiController implements IDataBase {
     @Override
     public ArrayList<Ride> getRidesHistory(User user) {
         return db.getRidesHistory(user);
+    }
+
+    @GetMapping(path = "/getRidesHistory/{username}")
+    public ArrayList<Ride> getRidesHistory(String username) {
+        User user = search(username);
+        return this.getRidesHistory(user);
     }
 
     @Override

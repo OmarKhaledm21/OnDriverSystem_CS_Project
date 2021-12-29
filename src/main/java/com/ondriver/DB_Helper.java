@@ -623,6 +623,20 @@ public class DB_Helper implements IDataBase {
     }
 
     @Override
+    public boolean addHoliday(String date) {
+        String query = "INSERT INTO Holidays (MonthDay) VALUES (?);";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,date);
+            preparedStatement.executeUpdate();
+            return true;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
     public double checkHoliday(String date) {
         String query = "SELECT * FROM Holidays WHERE MonthDay = ?;";
         double discount = 0.0;
