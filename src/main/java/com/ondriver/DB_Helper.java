@@ -663,7 +663,7 @@ public class DB_Helper implements IDataBase {
         Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1", destination, 1);
 
         Ride ride = Ride.createRide(customer, source, destination,2);
-        Offer offer = new Offer(captain, 0, ride);
+        //Offer offer = new Offer(captain, 0, ride);
         ride.setDriver(captain);
         db_helper.addUser(customer);
         db_helper.addUser(captain);

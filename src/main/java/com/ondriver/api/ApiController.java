@@ -1,8 +1,10 @@
 package com.ondriver.api;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ondriver.*;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 @RequestMapping("api/v1/ondriver")
@@ -57,6 +59,8 @@ public class ApiController implements IDataBase {
         return db.deleteUser(user);
     }
 
+
+
     @PostMapping(path = "/delete/{username}")
     public boolean deleteUser(@PathVariable String username){
         User user = db.search(username);
@@ -65,23 +69,38 @@ public class ApiController implements IDataBase {
 
     //TODO TODO TODO TODO TODO TODO
     @Override
-    public User search(String username) {
+    @GetMapping(path = "/search/{username}")
+    public User search( @PathVariable String username) {
         return db.search(username);
     }
+
 
     @Override
     public boolean userExist(User user) {
         return db.userExist(user);
     }
 
+
     @Override
     public boolean suspendUser(User user) {
         return db.suspendUser(user);
     }
 
+    @PostMapping(path = "/suspend/{username}")
+    public boolean userToSuspend(@PathVariable String username){
+        User user = db.search(username);
+        return this.suspendUser(user);
+    }
+
     @Override
     public ArrayList<RideEvent> getEvents(Ride ride) {
         return db.getEvents(ride);
+    }
+
+    @GetMapping(path = "/Events/{rideID}")
+    public ArrayList<RideEvent> Events (@PathVariable int rideID){
+        Ride ride = searchRide(rideID);
+        return this.db.getEvents(ride);
     }
 
     public void saveEvent(RideEvent log) {
@@ -107,6 +126,7 @@ public class ApiController implements IDataBase {
     public Area searchArea(String location) {
         return db.searchArea(location);
     }
+
 
     public void updateCaptain(Captain captain) {
         db.updateCaptain(captain);

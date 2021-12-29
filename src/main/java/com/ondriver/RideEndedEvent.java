@@ -1,8 +1,11 @@
 package com.ondriver;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RideEndedEvent extends RideEvent {
 
 
-    RideEndedEvent(Ride ride) {
+    RideEndedEvent(@JsonProperty("ride") Ride ride) {
         super(ride);
     }
 
