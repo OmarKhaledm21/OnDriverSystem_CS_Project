@@ -43,7 +43,6 @@ public class DB_Helper implements IDataBase {
                 "LicenseNumber TEXT NOT NULL," +
                 "AverageRating REAL DEFAULT 0.0," +
                 "CurrentLocation TEXT," +
-                "FOREIGN KEY (UserName) REFERENCES Users (UserName)" +
                 "FOREIGN KEY (UserName) REFERENCES Users (UserName) ON DELETE CASCADE" +
                 ");";
 
@@ -193,6 +192,11 @@ public class DB_Helper implements IDataBase {
                 PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery);
                 preparedStatement.setString(1, user.getUsername());
                 preparedStatement.executeUpdate();
+                if(user instanceof Captain){
+                    deleteCaptain(user.getUsername());
+                }else{
+                    deleteCustomer(user.getUsername());
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
@@ -200,6 +204,30 @@ public class DB_Helper implements IDataBase {
             return true;
         } else
             return false;
+    }
+
+    public boolean deleteCaptain(String username){
+        String query = "DELETE FROM Captain WHERE UserName = ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,username);
+            preparedStatement.executeUpdate();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean deleteCustomer(String username){
+        String query = "DELETE FROM Customers WHERE UserName = ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,username);
+            preparedStatement.executeUpdate();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return true;
     }
 
     public User search(String username) {
@@ -325,8 +353,7 @@ public class DB_Helper implements IDataBase {
     @Override
     public void addRide(Ride ride) {
         String addRideQuery = "INSERT INTO Rides (Source,Destination,RideStatus,Price,CustomerUsername,CaptainUsername,Rating,Passengers)"
-                +
-                "VALUES(?,?,?,?,?,?,?,?);";
+                + "VALUES(?,?,?,?,?,?,?,?);";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(addRideQuery);
             preparedStatement.setString(1, ride.getSource().getLocation());
@@ -498,7 +525,7 @@ public class DB_Helper implements IDataBase {
         String logQuery = "INSERT INTO Logs (EventName,Log,RideID) VALUES(?,?,?);";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(logQuery);
-            preparedStatement.setString(1, log.getClass().getName());
+            preparedStatement.setString(1, log.getClass().getSimpleName());
             preparedStatement.setString(2, log.toString());
             preparedStatement.setInt(3, ride.getID());
             preparedStatement.executeUpdate();

@@ -20,7 +20,8 @@ public class ApiController implements IDataBase {
     }
 
     @Override
-    public void addArea(Area area) {
+    @PostMapping(path = "/addArea")
+    public void addArea(@RequestBody Area area) {
         db.addArea(area);
     }
 
@@ -29,9 +30,25 @@ public class ApiController implements IDataBase {
         return db.addUser(user);
     }
 
+    @PostMapping(path = "/addCustomer")
+    public boolean addCustomer(@RequestBody Customer user) {
+        return this.addUser(user);
+    }
+
+    @PostMapping(path = "/addCaptain")
+    public boolean addCaptain(@RequestBody Captain user) {
+        return this.addUser(user);
+    }
+
     @Override
     public boolean activateUser(User user) {
         return db.activateUser(user);
+    }
+
+    @PostMapping(path = "/activate/{username}")
+    public boolean activateUser(@PathVariable String username){
+        User user = db.search(username);
+        return this.activateUser(user);
     }
 
     @Override
@@ -39,6 +56,13 @@ public class ApiController implements IDataBase {
         return db.deleteUser(user);
     }
 
+    @PostMapping(path = "/delete/{username}")
+    public boolean deleteUser(@PathVariable String username){
+        User user = db.search(username);
+        return this.deleteUser(user);
+    }
+
+    //TODO TODO TODO TODO TODO TODO
     @Override
     public User search(String username) {
         return db.search(username);

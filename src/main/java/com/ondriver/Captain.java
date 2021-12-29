@@ -1,7 +1,12 @@
 package com.ondriver;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
+@Component
 public class Captain extends User {
     private String nationalID;
     private String licenseNumber;
@@ -12,6 +17,7 @@ public class Captain extends User {
     private ArrayList<Ride> ridesHistory;
     private Area currentLocation;
 
+    @Autowired
     public Captain() {
         this.averageRating = 0.0;
         this.notificationList = new ArrayList<>();
@@ -23,7 +29,15 @@ public class Captain extends User {
         currentLocation = null;
     }
 
-    public Captain(String username, String password, String email, String mobileNumber, String nationalID, String licenseNumber, Area currentLocation, int status) {
+    @Autowired
+    public Captain(@JsonProperty("username")String username,
+                   @JsonProperty("password")String password,
+                   @JsonProperty("email")String email,
+                   @JsonProperty("mobileNumber")String mobileNumber,
+                   @JsonProperty("nationalID")String nationalID,
+                   @JsonProperty("licenseNumber")String licenseNumber,
+                   @JsonProperty("currentLocation")Area currentLocation,
+                   @JsonProperty("status")int status) {
         super(username, password, email, mobileNumber, status, "");
         this.nationalID = nationalID;
         this.licenseNumber = licenseNumber;

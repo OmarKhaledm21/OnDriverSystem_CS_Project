@@ -1,4 +1,8 @@
 package com.ondriver;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
 public abstract class User {
     private String username;
     private String password;
@@ -15,7 +19,12 @@ public abstract class User {
         this.status=0;
     }
 
-    public User(String username,String password,String email,String mobileNumber,int status, String date){
+    public User(@JsonProperty("username")String username,
+                @JsonProperty("password")String password,
+                @JsonProperty("email")String email,
+                @JsonProperty("mobileNumber")String mobileNumber,
+                @JsonProperty("status") int status,
+                @JsonProperty("date")String date){
         this.username = username;
         this.password = password;
         this.email = email;

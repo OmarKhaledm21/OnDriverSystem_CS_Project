@@ -1,12 +1,23 @@
 package com.ondriver;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
+@Component
 public class Customer extends User {
     private Ride ride;
     private boolean isFirstRide;
 
-    public Customer(String username, String password, String email, String mobileNumber, int status, String date) {
+    @Autowired
+    public Customer(@JsonProperty("username")String username,
+                    @JsonProperty("password")String password,
+                    @JsonProperty("email")String email,
+                    @JsonProperty("mobileNumber")String mobileNumber,
+                    @JsonProperty("status") int status,
+                    @JsonProperty("date")String date) {
         super(username, password, email, mobileNumber, status, date);
         this.status = status;
         ride = null;

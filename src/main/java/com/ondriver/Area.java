@@ -1,4 +1,6 @@
 package com.ondriver;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 
 public class Area {
@@ -6,7 +8,7 @@ public class Area {
     private ArrayList<Captain> pinnedCaptain;
     private double discount;
 
-    public Area(String location){
+    public Area(@JsonProperty("location")String location){
         this.discount = 0.0;
         this.location = location;
         this.pinnedCaptain = new ArrayList<>();
