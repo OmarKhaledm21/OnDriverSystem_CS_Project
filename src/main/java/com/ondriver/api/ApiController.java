@@ -97,11 +97,6 @@ public class ApiController implements IDataBase {
         return db.getEvents(ride);
     }
 
-    @GetMapping(path = "/Events/{rideID}")
-    public ArrayList<RideEvent> Events (@PathVariable int rideID){
-        Ride ride = searchRide(rideID);
-        return this.db.getEvents(ride);
-    }
 
     public void saveEvent(RideEvent log) {
         db.saveEvent(log);
@@ -138,9 +133,13 @@ public class ApiController implements IDataBase {
     }
 
     @Override
-    public ArrayList<String> searchLogs(int RideID) {
+    @GetMapping(path = "/Events/{RideID}")
+    public ArrayList<String> searchLogs(@PathVariable int RideID) {
         return db.searchLogs(RideID);
     }
+
+
+
 
     @Override
     @GetMapping(path = "/getAreas")
@@ -183,6 +182,6 @@ public class ApiController implements IDataBase {
     @Override
     public int rideCounter() {
         Ride.setRide_id(db.rideCounter());
-        return 0;
+        return Ride.getRide_id();
     }
 }
