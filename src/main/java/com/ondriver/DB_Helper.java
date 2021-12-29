@@ -387,6 +387,7 @@ public class DB_Helper implements IDataBase {
                 Area tempDestination = searchArea(resultSet.getString("Destination"));
                 int passenger_num = resultSet.getInt("Passengers");
                 res = new Ride(tempCustomer, tempSource, tempDestination,passenger_num);
+                res.setID(rideID);
             } else {
                 System.out.println("This ride doesn't exist!");
             }

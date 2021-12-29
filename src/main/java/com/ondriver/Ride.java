@@ -48,6 +48,10 @@ public class Ride {
         Ride.ride_id = ride_id;
     }
 
+    public static int getRide_id() {
+        return ride_id;
+    }
+
     public int getPassenger_number() {
         return passenger_number;
     }

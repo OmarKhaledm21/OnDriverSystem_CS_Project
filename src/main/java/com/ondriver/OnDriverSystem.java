@@ -93,7 +93,7 @@ public class OnDriverSystem implements IDataBase {
     @Override
     public int rideCounter() {
         Ride.ride_id = db.rideCounter();
-        return 0;
+        return Ride.ride_id;
     }
 
     public User login() {

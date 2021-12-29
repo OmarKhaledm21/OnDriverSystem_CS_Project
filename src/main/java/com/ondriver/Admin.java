@@ -105,13 +105,6 @@ public class Admin extends User {
         }
     }
 
-    public void listRideLogs(int rideID) {
-        Ride ride = OnDriverSystem.getSystem().searchRide(rideID);
-        if (ride != null) {
-            OnDriverSystem.getSystem().getEvents(ride);
-        }
-    }
-
     //TODO
     public void suspendUser() {
         OnDriverSystem system = OnDriverSystem.getSystem();
