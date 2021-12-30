@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class Ride {
     private Area source;
     private Area destination;
@@ -31,6 +35,27 @@ public class Ride {
 
         this.rideStatus = RideStatus.PENDING;
         this.captain = null;
+
+        this.priceOffers = new ArrayList<>();
+        this.rideID=ride_id;
+
+        this.passenger_number= passenger_number;
+    }
+
+    @Autowired
+    public Ride(@JsonProperty("customer") Customer customer,
+                @JsonProperty("captain") Captain captain,
+                @JsonProperty("source") Area source, 
+                @JsonProperty("destination") Area destination,
+                @JsonProperty("passenger_number") int passenger_number) {
+        rideEvents = new ArrayList<>();
+
+        this.customer = customer;
+        this.source = source;
+        this.destination = destination;
+
+        this.rideStatus = RideStatus.PENDING;
+        this.captain = captain;
 
         this.priceOffers = new ArrayList<>();
         this.rideID=ride_id;

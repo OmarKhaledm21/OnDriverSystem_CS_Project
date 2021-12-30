@@ -101,23 +101,27 @@ public class ApiController implements IDataBase {
         db.saveEvent(log);
     }
 
+    @PostMapping(path = "/addRide")
     @Override
-    public void addRide(Ride ride) {
+    public void addRide(@RequestBody Ride ride) {
         db.addRide(ride);
     }
 
+    @PostMapping(path = "/updateRide")
     @Override
-    public void changeRideStatus(Ride ride) {
+    public void changeRideStatus(@RequestBody Ride ride) {
         db.changeRideStatus(ride);
     }
 
+    @GetMapping(path = "/ride/{ride_id}")
     @Override
-    public Ride searchRide(int rideID) {
-        return db.searchRide(rideID);
+    public Ride searchRide(@PathVariable int ride_id) {
+        return db.searchRide(ride_id);
     }
 
     @Override
-    public Area searchArea(String location) {
+    @GetMapping(path = "/area/{location}")
+    public Area searchArea(@PathVariable String location) {
         return db.searchArea(location);
     }
 
@@ -127,7 +131,8 @@ public class ApiController implements IDataBase {
     }
 
     @Override
-    public void driverMoved(Captain captain) {
+    @PostMapping(path = "/driverMoved")
+    public void driverMoved(@RequestBody Captain captain) {
         db.driverMoved(captain);
     }
 
