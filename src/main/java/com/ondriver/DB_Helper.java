@@ -42,6 +42,7 @@ public class DB_Helper implements IDataBase {
                 "LicenseNumber TEXT NOT NULL," +
                 "AverageRating REAL DEFAULT 0.0," +
                 "CurrentLocation TEXT," +
+                "Balance REAL DEFAULT 0.0," +
                 "FOREIGN KEY (UserName) REFERENCES Users (UserName) ON DELETE CASCADE" +
                 ");";
 
@@ -258,6 +259,7 @@ public class DB_Helper implements IDataBase {
                     String licenseNumber = driverSet.getString("LicenseNumber");
                     String currentLocation = driverSet.getString("CurrentLocation");
                     Area currLocation = new Area(currentLocation);
+                    double Balance = this.getBalance(username);
                     user = new Captain(username, password, email, mobileNumber, nationalID, licenseNumber, currLocation, userStatus);
 
                 } else if (userType.equals("Customer")) {
@@ -317,14 +319,15 @@ public class DB_Helper implements IDataBase {
     @Override
     public void updateCaptain(Captain captain) {
         // username national id lis avg rating
-        String updateQuery = "UPDATE Captain SET NationalID = ?, LicenseNumber = ?, AverageRating = ? WHERE UserName = ?";
+        String updateQuery = "UPDATE Captain SET NationalID = ?, LicenseNumber = ?, AverageRating = ?, Balance=? WHERE UserName = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
 
             preparedStatement.setString(1, captain.getNationalID());
             preparedStatement.setString(2, captain.getLicenseNumber());
             preparedStatement.setDouble(3, captain.getAverageRating());
-            preparedStatement.setString(4, captain.getUsername());
+            preparedStatement.setDouble(4, captain.getBalance());
+            preparedStatement.setString(5, captain.getUsername());
             preparedStatement.executeUpdate();
         } catch (Exception e) {
             System.out.println("Couldn't update Driver: " + e.getMessage());
@@ -490,6 +493,23 @@ public class DB_Helper implements IDataBase {
             e.printStackTrace();
         }
         return avgRating;
+    }
+
+    @Override
+    public double getBalance(String username) {
+        double Balance = 0.0;
+        String query = "SELECT Balance from Captain WHERE UserName = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                Balance=resultSet.getDouble("Balance");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Balance;
     }
 
     ////////////////////////////// Events Controller ////////////////////////////////////////

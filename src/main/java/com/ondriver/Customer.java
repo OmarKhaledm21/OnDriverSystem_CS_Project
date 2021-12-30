@@ -122,14 +122,14 @@ public class Customer extends User {
             if (choice >= 0 && choice <= offers.size()) {
 
                 Offer acceptedOffer = offers.get(choice - 1);
-
+                this.ride.acceptOffer(acceptedOffer);
                 acceptedOffer.getDriver().notify(new CustomerAcceptedRideNotification(this.ride));
                 CustomerAcceptedEvent customerAcceptedEvent = new CustomerAcceptedEvent(this.ride);
 
                 this.ride.addToEventLog(customerAcceptedEvent);
                 //this.ride.setRideStatus(RideStatus.IN_PROGRESS);
 
-                this.ride.acceptOffer(acceptedOffer);
+
 
                 OnDriverSystem.getSystem().changeRideStatus(this.ride);
                 OnDriverSystem.getSystem().addRide(this.ride);

@@ -1,9 +1,11 @@
 package com.ondriver;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Scanner;
 
 @Component
@@ -19,6 +21,8 @@ public class Captain extends User {
 
     private double balance;
 
+    Hashtable<Integer,Double> offers;
+
     @Autowired
     public Captain() {
         this.averageRating = 0.0;
@@ -33,14 +37,14 @@ public class Captain extends User {
     }
 
     @Autowired
-    public Captain(@JsonProperty("username")String username,
-                   @JsonProperty("password")String password,
-                   @JsonProperty("email")String email,
-                   @JsonProperty("mobileNumber")String mobileNumber,
-                   @JsonProperty("nationalID")String nationalID,
-                   @JsonProperty("licenseNumber")String licenseNumber,
-                   @JsonProperty("currentLocation")Area currentLocation,
-                   @JsonProperty("status")int status) {
+    public Captain(@JsonProperty("username") String username,
+                   @JsonProperty("password") String password,
+                   @JsonProperty("email") String email,
+                   @JsonProperty("mobileNumber") String mobileNumber,
+                   @JsonProperty("nationalID") String nationalID,
+                   @JsonProperty("licenseNumber") String licenseNumber,
+                   @JsonProperty("currentLocation") Area currentLocation,
+                   @JsonProperty("status") int status) {
         super(username, password, email, mobileNumber, status, "");
         this.nationalID = nationalID;
         this.licenseNumber = licenseNumber;
@@ -48,14 +52,16 @@ public class Captain extends User {
         this.notificationList = new ArrayList<>();
         this.ride = null;
         this.ridesHistory = new ArrayList<>();
-        if(currentLocation == null){
+        if (currentLocation == null) {
             this.currentLocation = new Area("a1");
-        }else {
+        } else {
             this.currentLocation = currentLocation;
         }
 
-        this.balance = 0;
+        this.balance = OnDriverSystem.getSystem().getBalance(username);
+        offers=new Hashtable<>();
     }
+
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
     @Override
     public String toString() {
@@ -68,7 +74,16 @@ public class Captain extends User {
                 ", Current Location: " + this.getCurrentLocation();
     }
 
-    public void setRidesHistory(ArrayList<Ride>ridesHistory){
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public void setRidesHistory(ArrayList<Ride> ridesHistory) {
         this.ridesHistory = ridesHistory;
     }
 
@@ -137,26 +152,32 @@ public class Captain extends User {
         ride.addOffer(offeredPrice);
         OfferPriceEvent offerPriceEvent = new OfferPriceEvent(ride, offeredPrice);
         ride.addToEventLog(offerPriceEvent);
+        offers.put(ride.getID(),price);
     }
 
-    public void notify(Notification notification){
-        if (notification instanceof CustomerAcceptedRideNotification){
-                this.ride = notification.getRide();
-                //TODO BALANCE += OOFFERRR
-                this.ride.setDriver(this);
-        }else {
-                if (notification instanceof FinishedRideNotification) {
-                    this.currentLocation = ride.getDestination();
-                    OnDriverSystem.getSystem().driverMoved(this);
-                    this.ridesHistory.add(ride);
-                    setAverageRating();
-                    this.ride = null;
-                } else {
-                    this.notificationList.add(notification);
-                }
+    public void notify(Notification notification) {
+        if (notification instanceof CustomerAcceptedRideNotification) {
+            this.ride = notification.getRide();
+            //TODO BALANCE += OOFFERRR
+            this.ride.setDriver(this);
+            this.balance += offers.get(ride.getID());
+            this.setBalance(balance);
+            System.out.println(this.getBalance());
+            OnDriverSystem.getSystem().updateCaptain(this);
+            offers.clear();
+        } else {
+            if (notification instanceof FinishedRideNotification) {
+                this.currentLocation = ride.getDestination();
+                OnDriverSystem.getSystem().driverMoved(this);
+                this.ridesHistory.add(ride);
+                setAverageRating();
+                this.ride = null;
+            } else {
+                this.notificationList.add(notification);
             }
+        }
     }
-    
+
 
     public void manageNotification() {
         int notificationIndex = 0;
@@ -198,7 +219,7 @@ public class Captain extends User {
         }
     }
 
-//TODO DBBBB
+    //TODO DBBBB
     public void addFavouriteArea() {
         Scanner input = new Scanner(System.in);
         System.out.print("Enter area name: ");

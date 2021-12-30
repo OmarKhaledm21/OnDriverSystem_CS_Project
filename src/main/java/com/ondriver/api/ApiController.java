@@ -186,6 +186,11 @@ public class ApiController implements IDataBase {
         return db.getRating(username);
     }
 
+    @Override
+    public double getBalance(String username) {
+        return db.getBalance(username);
+    }
+
     /**
      * Request Ride Service
      * */

@@ -307,4 +307,9 @@ public class OnDriverSystem implements IDataBase {
     public double getRating(String username) {
         return db.getRating(username);
     }
+
+    @Override
+    public double getBalance(String username) {
+        return db.getBalance(username);
+    }
 }
