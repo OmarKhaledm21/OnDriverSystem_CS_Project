@@ -26,5 +26,6 @@ public interface IDataBase {
     public boolean isNewUser(String username);
     public boolean addHoliday(String date);
     public double checkHoliday(String date);
+    public double getRating(String username);
 }
 

@@ -1,4 +1,5 @@
 package com.ondriver;
+
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
@@ -66,8 +67,8 @@ public class DB_Helper implements IDataBase {
                 "Passengers INT DEFAULT 1," +
                 "FOREIGN KEY (CustomerUsername) REFERENCES Users (UserName)," +
                 "FOREIGN KEY (CaptainUsername) REFERENCES Users (UserName)" +
-                "FOREIGN KEY (Source) REFERENCES Rides (Location),"+
-                "FOREIGN KEY (Destination) REFERENCES Rides (Location)"+
+                "FOREIGN KEY (Source) REFERENCES Rides (Location)," +
+                "FOREIGN KEY (Destination) REFERENCES Rides (Location)" +
                 ");";
 
         String createLogsTable = "CREATE TABLE Logs (" +
@@ -190,9 +191,9 @@ public class DB_Helper implements IDataBase {
                 PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery);
                 preparedStatement.setString(1, user.getUsername());
                 preparedStatement.executeUpdate();
-                if(user instanceof Captain){
+                if (user instanceof Captain) {
                     deleteCaptain(user.getUsername());
-                }else{
+                } else {
                     deleteCustomer(user.getUsername());
                 }
             } catch (Exception e) {
@@ -204,25 +205,25 @@ public class DB_Helper implements IDataBase {
             return false;
     }
 
-    public boolean deleteCaptain(String username){
+    public boolean deleteCaptain(String username) {
         String query = "DELETE FROM Captain WHERE UserName = ?;";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1,username);
+            preparedStatement.setString(1, username);
             preparedStatement.executeUpdate();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
     }
 
-    public boolean deleteCustomer(String username){
+    public boolean deleteCustomer(String username) {
         String query = "DELETE FROM Customers WHERE UserName = ?;";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1,username);
+            preparedStatement.setString(1, username);
             preparedStatement.executeUpdate();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
@@ -362,7 +363,7 @@ public class DB_Helper implements IDataBase {
             preparedStatement.setString(5, ride.getCustomer().getUsername());
             preparedStatement.setString(6, ride.getDriver().getUsername());
             preparedStatement.setInt(7, ride.getRating());
-            preparedStatement.setInt(8,ride.getPassenger_number());
+            preparedStatement.setInt(8, ride.getPassenger_number());
             preparedStatement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -384,7 +385,7 @@ public class DB_Helper implements IDataBase {
                 Area tempSource = searchArea(resultSet.getString("Source"));
                 Area tempDestination = searchArea(resultSet.getString("Destination"));
                 int passenger_num = resultSet.getInt("Passengers");
-                res = new Ride(tempCustomer, tempSource, tempDestination,passenger_num);
+                res = new Ride(tempCustomer, tempSource, tempDestination, passenger_num);
                 res.setID(rideID);
             } else {
                 System.out.println("This ride doesn't exist!");
@@ -419,7 +420,7 @@ public class DB_Helper implements IDataBase {
             PreparedStatement preparedStatement = connection.prepareStatement(updateStatus);
             preparedStatement.setString(1, ride.getRideStatus().toString());
             preparedStatement.setInt(2, ride.getRating());
-            preparedStatement.setDouble(3,ride.getPrice());
+            preparedStatement.setDouble(3, ride.getPrice());
             preparedStatement.setString(4, ride.getCustomer().getUsername());
             preparedStatement.setInt(5, ride.getID());
             preparedStatement.executeUpdate();
@@ -474,6 +475,22 @@ public class DB_Helper implements IDataBase {
         }
     }
 
+    @Override
+    public double getRating(String username) {
+        double avgRating = 0.0;
+        String query = "SELECT AverageRating from Captain WHERE UserName = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1,username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                avgRating=resultSet.getDouble("AverageRating");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return avgRating;
+    }
 
     ////////////////////////////// Events Controller ////////////////////////////////////////
 
@@ -498,7 +515,7 @@ public class DB_Helper implements IDataBase {
                         rideEvent = new DriverArrivedEvent(ride);
                         break;
                     case "OfferPriceEvent": //TODO: attach offer to event
-                        
+
                         rideEvent = new OfferPriceEvent(ride, ride.getPriceOffers().get(ride.getPriceOffers().size() - 1));
                         break;
                     case "RideEndedEvent":
@@ -536,45 +553,45 @@ public class DB_Helper implements IDataBase {
 
     @Override
     public ArrayList<String> searchLogs(int RideID) {
-        ArrayList<String>logs = new ArrayList<>();
+        ArrayList<String> logs = new ArrayList<>();
         try {
             String query = "SELECT Log FROM Logs WHERE RideId = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1,RideID);
+            preparedStatement.setInt(1, RideID);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 logs.add(resultSet.getString("Log"));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 //            System.out.println("Ride Not found");
-            logs=null;
+            logs = null;
         }
         return logs;
     }
 
-    public ArrayList<Ride> getRidesHistory(User user){
+    public ArrayList<Ride> getRidesHistory(User user) {
         String historyQuery = "SELECT * FROM Rides WHERE CaptainUsername = ?;";
         ArrayList<Ride> ridesHistory = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(historyQuery);
-            preparedStatement.setString(1,user.getUsername());
+            preparedStatement.setString(1, user.getUsername());
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 Ride ride = null;
                 Customer customer = (Customer) search(resultSet.getString("CustomerUsername"));
                 Captain captain = (Captain) user;
                 int rating = resultSet.getInt("Rating");
                 double price = resultSet.getDouble("Price");
-                Area source = searchArea( resultSet.getString("Source") );
-                Area destination = searchArea( resultSet.getString("Destination") );
+                Area source = searchArea(resultSet.getString("Source"));
+                Area destination = searchArea(resultSet.getString("Destination"));
                 int passenger_number = resultSet.getInt("Passengers");
-                ride = new Ride(customer,source,destination,passenger_number);
+                ride = new Ride(customer, source, destination, passenger_number);
                 ride.setRating(rating);
                 ride.setRideStatus(RideStatus.FINISHED);
                 ridesHistory.add(ride);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return ridesHistory;
@@ -587,11 +604,12 @@ public class DB_Helper implements IDataBase {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 Area area = new Area(resultSet.getString("Location"));
                 areas.add(area);
             }
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
 
         return areas;
     }
@@ -601,10 +619,10 @@ public class DB_Helper implements IDataBase {
         String query = "SELECT * FROM Customers WHERE UserName = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1,username);
+            preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.getInt("NewUser") == 1;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -615,9 +633,9 @@ public class DB_Helper implements IDataBase {
         String query = "UPDATE Customers SET NewUser = 0 WHERE UserName = ?;";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1,username);
+            preparedStatement.setString(1, username);
             preparedStatement.executeUpdate();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -627,10 +645,10 @@ public class DB_Helper implements IDataBase {
         String query = "INSERT INTO Holidays (MonthDay) VALUES (?);";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1,date);
+            preparedStatement.setString(1, date);
             preparedStatement.executeUpdate();
             return true;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -642,12 +660,12 @@ public class DB_Helper implements IDataBase {
         double discount = 0.0;
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1,date);
+            preparedStatement.setString(1, date);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 discount = resultSet.getDouble("Discount");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return discount;
@@ -661,7 +679,7 @@ public class DB_Helper implements IDataBase {
         Customer customer = new Customer("o1", "o1", "o1", "o1", 1, "25/12");
         Captain captain = new Captain("d1", "d1", "d1", "d1", "d1", "d1", destination, 1);
 
-        Ride ride = Ride.createRide(customer, source, destination,2);
+        Ride ride = Ride.createRide(customer, source, destination, 2);
         //Offer offer = new Offer(captain, 0, ride);
         ride.setDriver(captain);
         db_helper.addUser(customer);
@@ -677,11 +695,11 @@ public class DB_Helper implements IDataBase {
         // Ride temp = db_helper.searchRide(ride.getID());
         // System.out.println(temp.toString());
 
-         RideEvent rideEvent = new CustomerAcceptedEvent(ride);
-         RideEvent rideEvent1 = new RideEndedEvent(ride);
-         db_helper.saveEvent(rideEvent);
-         db_helper.saveEvent(rideEvent1);
-         db_helper.searchLogs(1);
+        RideEvent rideEvent = new CustomerAcceptedEvent(ride);
+        RideEvent rideEvent1 = new RideEndedEvent(ride);
+        db_helper.saveEvent(rideEvent);
+        db_helper.saveEvent(rideEvent1);
+        db_helper.searchLogs(1);
 
 
         // db_helper.getEvent(ride);

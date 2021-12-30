@@ -181,6 +181,11 @@ public class ApiController implements IDataBase {
         return Ride.getRide_id();
     }
 
+    @Override
+    public double getRating(String username) {
+        return db.getRating(username);
+    }
+
     /**
      * Request Ride Service
      * */

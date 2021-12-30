@@ -44,7 +44,7 @@ public class Captain extends User {
         super(username, password, email, mobileNumber, status, "");
         this.nationalID = nationalID;
         this.licenseNumber = licenseNumber;
-        this.averageRating = 0.0;
+        this.averageRating = OnDriverSystem.getSystem().getRating(username);
         this.notificationList = new ArrayList<>();
         this.ride = null;
         this.ridesHistory = new ArrayList<>();

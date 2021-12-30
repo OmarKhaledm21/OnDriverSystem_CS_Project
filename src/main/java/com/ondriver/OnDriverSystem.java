@@ -302,4 +302,9 @@ public class OnDriverSystem implements IDataBase {
     public boolean addHoliday(String date) {
         return db.addHoliday(date);
     }
+
+    @Override
+    public double getRating(String username) {
+        return db.getRating(username);
+    }
 }
