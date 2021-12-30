@@ -1,6 +1,4 @@
 package com.ondriver;
-import org.springframework.stereotype.Repository;
-
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;

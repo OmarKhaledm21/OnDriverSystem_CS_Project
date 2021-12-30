@@ -188,7 +188,7 @@ public class Customer extends User {
                     requestRide();
                     break;
                 case 2:
-                    if (this.ride != null) {
+                    if (this.getRide() != null) {
                         checkOffers();
                     } else {
                         System.out.println("You are not in a ride currently!");

@@ -17,6 +17,8 @@ public class Captain extends User {
     private ArrayList<Ride> ridesHistory;
     private Area currentLocation;
 
+    private double balance;
+
     @Autowired
     public Captain() {
         this.averageRating = 0.0;
@@ -27,6 +29,7 @@ public class Captain extends User {
         licenseNumber = "";
         this.status = 0;
         currentLocation = new Area("a1");
+        this.balance = 0.0;
     }
 
     @Autowired
@@ -50,6 +53,8 @@ public class Captain extends User {
         }else {
             this.currentLocation = currentLocation;
         }
+
+        this.balance = 0;
     }
     ///////////////////////////////////// Getters and Setters /////////////////////////////////////
     @Override
@@ -137,6 +142,7 @@ public class Captain extends User {
     public void notify(Notification notification){
         if (notification instanceof CustomerAcceptedRideNotification){
                 this.ride = notification.getRide();
+                //TODO BALANCE += OOFFERRR
                 this.ride.setDriver(this);
         }else {
                 if (notification instanceof FinishedRideNotification) {

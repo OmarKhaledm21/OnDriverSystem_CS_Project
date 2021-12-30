@@ -4,7 +4,6 @@ import com.ondriver.*;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 @RequestMapping("api/v1/ondriver")
@@ -138,9 +137,6 @@ public class ApiController implements IDataBase {
         return db.searchLogs(RideID);
     }
 
-
-
-
     @Override
     @GetMapping(path = "/getAreas")
     public ArrayList<Area> getAreas() {
@@ -184,4 +180,42 @@ public class ApiController implements IDataBase {
         Ride.setRide_id(db.rideCounter());
         return Ride.getRide_id();
     }
+
+    /**
+     * Request Ride Service
+     * */
+    //TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
+    static class RequestHandler{
+        public String source;
+        public String destination;
+        public String username;
+
+        public RequestHandler(@RequestBody @JsonProperty("source") String source,
+                              @RequestBody @JsonProperty("destination")String destination,
+                              @RequestBody @JsonProperty("username") String username){
+            this.source= source;
+            this.destination = destination;
+            this.username = username;
+        }
+    }
+
+    @PostMapping(path = "/requestRide/{username}")
+    public void requestRide(@RequestBody RequestHandler requestHandler){
+        Customer customer = (Customer) OnDriverSystem.getSystem().getUserList().get(requestHandler.username);
+        Ride ride = new Ride(customer,new Area(requestHandler.source),new Area(requestHandler.destination),3);
+
+        ride.setCustomer(customer);
+        customer.setRide(ride);
+        int newRideID = OnDriverSystem.getSystem().rideCounter();
+        ride.setID(++newRideID);
+        OnDriverSystem.getSystem().newRideNotify(ride);
+    }
+
+    @GetMapping(path = "/getCustomerRide/{username}")
+    public Ride getCustomerRide(@PathVariable String username){
+        Customer customer = (Customer) OnDriverSystem.getSystem().getUserList().get(username);
+        Ride tempRide = new Ride(null,customer.getRide().getSource(),customer.getRide().getDestination(),customer.getRide().getPassenger_number());
+        return tempRide;
+    }
+
 }
