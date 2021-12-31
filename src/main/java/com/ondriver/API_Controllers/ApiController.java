@@ -238,4 +238,19 @@ public class ApiController implements IDataBase {
         return tempRide;
     }
 
+    @GetMapping(path = "/getOffers/{username}")
+    public ArrayList<Offer> checkOffers(@PathVariable String username){
+        Customer customer = (Customer)OnDriverSystem.getSystem().getUserList().get(username);
+        ArrayList<Offer> customerOffer=null;
+        if(customer!=null) {
+            customerOffer =  new ArrayList<>(customer.getRide().getPriceOffers());
+            for(Offer offer : customerOffer){
+                offer.getDriver().setRide(null);
+                offer.getRide().setDriver(null);
+                offer.getRide().setCustomer(null);
+                offer.getRide().setPriceOffers(null);
+            }
+        }
+        return customerOffer;
+    }
 }
